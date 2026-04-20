@@ -2552,11 +2552,12 @@
             <div class="bg-gray-50 rounded-lg p-3 mb-3">
               <div class="flex items-center justify-between mb-2">
                 <div class="text-[11px] text-gray-500 font-medium">客户画像</div>
-                <button class="text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button id="portrait-edit-btn" onclick="togglePortraitEdit()" class="text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
               </div>
-              <div class="text-xs text-gray-700 leading-relaxed">
+              <div id="portrait-display" class="text-xs text-gray-700 leading-relaxed">
                 客户为<span class="text-emerald-600 font-medium">初一学生家长（父亲）</span>，孩子<span class="text-emerald-600 font-medium">期末英语 70 分</span>，主要弱项在<span class="text-emerald-600 font-medium">语法和写作</span>。偏好 <span class="text-emerald-600 font-medium">1v1 名师</span>授课，对试听课接受度高，但<span class="text-orange-600 font-medium">价格较敏感</span>，核心关注<span class="text-emerald-600 font-medium">师资水平和提分效果</span>。决策风格偏务实，不宜过度铺垫。
               </div>
+              <textarea id="portrait-edit" class="hidden w-full text-xs px-2 py-1.5 border border-emerald-200 rounded leading-relaxed resize-none focus:outline-none focus:border-emerald-400" rows="5">客户为初一学生家长（父亲），孩子期末英语 70 分，主要弱项在语法和写作。偏好 1v1 名师授课，对试听课接受度高，但价格较敏感，核心关注师资水平和提分效果。决策风格偏务实，不宜过度铺垫。</textarea>
             </div>
 
             <!-- 建议回复 -->
@@ -2646,6 +2647,31 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() { switchPage('chat'); });
+
+  function togglePortraitEdit() {
+    const display = document.getElementById('portrait-display');
+    const editArea = document.getElementById('portrait-edit');
+    const btn = document.getElementById('portrait-edit-btn');
+    const isEditing = !editArea.classList.contains('hidden');
+    if (isEditing) {
+      // 保存：把纯文本写回展示区
+      display.textContent = editArea.value;
+      editArea.classList.add('hidden');
+      display.classList.remove('hidden');
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+      btn.classList.remove('text-emerald-600');
+      btn.classList.add('text-gray-400');
+    } else {
+      // 进入编辑
+      editArea.value = display.textContent.trim();
+      display.classList.add('hidden');
+      editArea.classList.remove('hidden');
+      editArea.focus();
+      btn.textContent = '✓';
+      btn.classList.add('text-emerald-600');
+      btn.classList.remove('text-gray-400');
+    }
+  }
 
   function switchPage(name) {
     document.getElementById('page-home').classList.toggle('hidden-page', name !== 'home');
