@@ -2645,6 +2645,8 @@
 </div>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function() { switchPage('chat'); });
+
   function switchPage(name) {
     document.getElementById('page-home').classList.toggle('hidden-page', name !== 'home');
     document.getElementById('page-jingying').classList.toggle('hidden-page', name !== 'jingying');
