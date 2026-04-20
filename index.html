@@ -1,0 +1,2826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>小薯数字员工 - 控制台</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; background: #FAFAF9; }
+  .brand-green { color: #10B981; }
+  .bg-brand { background: #10B981; }
+  .bg-brand-soft { background: #ECFDF5; }
+  .text-brand { color: #059669; }
+  .num-font { font-family: "SF Pro Display", -apple-system, sans-serif; font-feature-settings: "tnum"; letter-spacing: -0.02em; }
+  .card { background: white; border-radius: 16px; border: 1px solid #F0F0EE; }
+  .funnel-bar { transition: all 0.3s; }
+  .funnel-bar:hover { transform: translateY(-2px); }
+  .tab-active { color: #111; border-bottom: 2px solid #111; }
+  .tab-inactive { color: #9CA3AF; border-bottom: 2px solid transparent; }
+  .tab-inactive:hover { color: #6B7280; }
+  .chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+  .chip-green { background: #ECFDF5; color: #059669; }
+  .chip-blue { background: #EFF6FF; color: #2563EB; }
+  .chip-orange { background: #FFF7ED; color: #C2410C; }
+  .chip-purple { background: #F5F3FF; color: #7C3AED; }
+  .chip-gray { background: #F3F4F6; color: #6B7280; }
+  .chip-red { background: #FEF2F2; color: #DC2626; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .hover-row:hover { background: #FAFAF9; }
+  .hidden-tab { display: none; }
+  .hidden-page { display: none; }
+  .nav-item { cursor: pointer; }
+  .nav-active { background: #F3F4F6; color: #111827; font-weight: 500; }
+  .pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .hover-card { transition: all 0.2s; cursor: pointer; }
+  .hover-card:hover { transform: translateY(-1px); border-color: #10B981; }
+  .feed-item { animation: slideIn 0.4s ease-out; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 3px; }
+</style>
+</head>
+<body class="text-gray-900">
+
+<div class="flex min-h-screen">
+
+  <!-- ============ 左侧栏 ============ -->
+  <aside class="w-56 bg-white border-r border-gray-100 flex flex-col">
+    <div class="p-5 flex items-center gap-2">
+      <div class="w-9 h-9 bg-brand rounded-lg flex items-center justify-center text-white font-bold">薯</div>
+      <span class="font-semibold">XXX 教育</span>
+    </div>
+    <nav class="flex-1 px-3 text-sm">
+      <a id="nav-home" onclick="switchPage('home')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg nav-active">🏠 <span>首页</span></a>
+      <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">👥 <span>数字员工管理</span></a>
+      <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">⚡ <span>Skill 市场</span></a>
+      <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">📚 <span>内容库</span></a>
+      <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">💬 <span>对话测试</span></a>
+      <a id="nav-jingying" onclick="switchPage('jingying')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">📊 <span>经营管理</span></a>
+      <div class="text-xs text-gray-400 px-3 mt-6 mb-2">原有功能</div>
+      <a id="nav-chat" onclick="switchPage('chat')" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">💌 <span>私信回复</span></a>
+      <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50">🔒 <span>私信授权</span></a>
+    </nav>
+    <div class="p-4 flex items-center gap-2 border-t border-gray-100">
+      <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-base">🍪</div>
+      <span class="text-sm">小曲</span>
+    </div>
+  </aside>
+
+  <!-- ============ 主区域 ============ -->
+  <main class="flex-1 p-8 overflow-auto">
+
+    <!-- ======================================== -->
+    <!-- PAGE: 首页 -->
+    <!-- ======================================== -->
+    <div id="page-home">
+
+      <!-- 顶部欢迎条 -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-2xl font-semibold flex items-center gap-2">下午好，小曲 ☕️</h1>
+          <p class="text-sm text-gray-500 mt-1">你的 <b class="text-gray-900">2 个数字员工</b> 今天已服务 <b class="text-gray-900">137 位</b> 用户，新增 <b class="text-emerald-600">31 条线索</b></p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="px-4 py-2.5 bg-gray-900 text-white rounded-lg text-sm flex items-center gap-2">
+            <span>+</span> 新建数字员工
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 个核心数据卡片 -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="card p-5 hover-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs text-gray-500">今日私信触达</div>
+            <span class="chip chip-green">↑ 12.4%</span>
+          </div>
+          <div class="num-font text-3xl font-semibold mb-1">248</div>
+          <div class="text-xs text-gray-400">较昨日同期 +27</div>
+          <svg viewBox="0 0 100 24" class="w-full h-6 mt-3">
+            <polyline points="0,18 14,15 28,16 42,12 56,14 70,8 84,10 100,6" stroke="#10B981" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="card p-5 hover-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs text-gray-500">今日新增线索</div>
+            <span class="chip chip-green">↑ 8.1%</span>
+          </div>
+          <div class="num-font text-3xl font-semibold mb-1">31</div>
+          <div class="text-xs text-gray-400">投流 12 · 自然 19</div>
+          <div class="flex gap-0.5 mt-3">
+            <div class="h-1.5 bg-purple-400 rounded" style="width:38%"></div>
+            <div class="h-1.5 bg-emerald-400 rounded flex-1"></div>
+          </div>
+        </div>
+
+        <div class="card p-5 hover-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs text-gray-500">高意向</div>
+            <span class="chip chip-orange">热</span>
+          </div>
+          <div class="num-font text-3xl font-semibold mb-1">8</div>
+          <div class="text-xs text-gray-400">占今日新增 25.8%</div>
+          <div class="bg-gray-100 rounded-full h-1.5 mt-3">
+            <div class="bg-orange-500 h-1.5 rounded-full" style="width:25.8%"></div>
+          </div>
+        </div>
+
+        <div class="card p-5 hover-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs text-gray-500">AI 接管率</div>
+            <span class="chip chip-green">↑ 1.2%</span>
+          </div>
+          <div class="num-font text-3xl font-semibold mb-1">96.4<span class="text-lg text-gray-400">%</span></div>
+          <div class="text-xs text-gray-400">仅 9 条转人工</div>
+          <div class="bg-gray-100 rounded-full h-1.5 mt-3">
+            <div class="bg-emerald-500 h-1.5 rounded-full" style="width:96.4%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 待办区 + 实时动态 -->
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="col-span-2 card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-semibold flex items-center gap-2">需要你关注 <span class="chip chip-red">3</span></h3>
+            </div>
+            <button class="text-xs text-gray-400 hover:text-gray-700">全部已处理 ✓</button>
+          </div>
+
+          <div class="space-y-2.5">
+            <!-- 1. 转人工待接管 -->
+            <div class="border border-gray-100 rounded-lg p-3 hover:border-orange-200 hover:bg-orange-50/30 transition cursor-pointer">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-sm shrink-0">🙋</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-0.5">
+                    <div class="font-medium text-sm">2 条转人工线索待接管</div>
+                    <span class="text-xs text-gray-400">5 分钟前</span>
+                  </div>
+                  <div class="text-xs text-gray-500">用户在对话中要求"转人工"，AI 已暂停回复</div>
+                </div>
+                <button onclick="openChat()" class="px-3 py-1.5 bg-gray-900 text-white text-xs rounded-md shrink-0">去接管</button>
+              </div>
+            </div>
+
+            <!-- 3. Skill 待优化 -->
+            <div onclick="switchPage('jingying'); switchTab('quality')" class="border border-gray-100 rounded-lg p-3 hover:border-orange-200 hover:bg-orange-50/30 transition cursor-pointer">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-sm shrink-0">⚙️</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-0.5">
+                    <div class="font-medium text-sm">3 个 Skill 待优化</div>
+                    <span class="text-xs text-gray-400">15 分钟前</span>
+                  </div>
+                  <div class="text-xs text-gray-500">这些问题 AI 没把握答好："老师有教师资格证吗？" 等</div>
+                </div>
+                <button onclick="switchPage('jingying'); setTimeout(()=>switchTab('skills'),50)" class="px-3 py-1.5 border border-gray-200 text-gray-700 text-xs rounded-md shrink-0">去优化</button>
+              </div>
+            </div>
+
+            <!-- 4. 数据异常波动 -->
+            <div onclick="switchPage('jingying')" class="border border-gray-100 rounded-lg p-3 hover:border-orange-200 hover:bg-orange-50/30 transition cursor-pointer">
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-sm shrink-0">📉</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between mb-0.5">
+                    <div class="font-medium text-sm">数据异常波动</div>
+                    <span class="text-xs text-gray-400">今天 09:00</span>
+                  </div>
+                  <div class="text-xs text-gray-500">「沉默唤醒」回应率较上周下降 18%，建议检查文案</div>
+                </div>
+                <button onclick="switchPage('jingying')" class="px-3 py-1.5 border border-gray-200 text-gray-700 text-xs rounded-md shrink-0">查看详情</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 数字员工今日表现 -->
+        <div class="card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">数字员工动态</h3>
+            <span class="text-xs text-gray-400">今日</span>
+          </div>
+
+          <div class="space-y-2.5">
+            <!-- 员工 1 -->
+            <div class="border border-gray-100 rounded-lg p-3 hover:border-emerald-200 transition cursor-pointer">
+              <div class="flex items-center gap-2 mb-2.5">
+                <div class="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-medium">薯</div>
+                <div class="font-medium text-sm flex items-center gap-1.5">小薯学习顾问 <span class="dot bg-emerald-500 pulse" style="margin-right:0"></span></div>
+              </div>
+              <div class="grid grid-cols-3 gap-1.5 text-center">
+                <div class="py-1.5 bg-gray-50 rounded">
+                  <div class="num-font text-base font-semibold">189</div>
+                  <div class="text-[10px] text-gray-500">接待</div>
+                </div>
+                <div class="py-1.5 bg-gray-50 rounded">
+                  <div class="num-font text-base font-semibold text-emerald-600">28</div>
+                  <div class="text-[10px] text-gray-500">转化</div>
+                </div>
+                <div class="py-1.5 bg-gray-50 rounded">
+                  <div class="num-font text-base font-semibold">14.8<span class="text-[10px] text-gray-400">%</span></div>
+                  <div class="text-[10px] text-gray-500">转化率</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 员工 2 -->
+            <div class="border border-gray-100 rounded-lg p-3 hover:border-emerald-200 transition cursor-pointer">
+              <div class="flex items-center gap-2 mb-2.5">
+                <div class="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center text-xs font-medium">官</div>
+                <div class="font-medium text-sm flex items-center gap-1.5">官方客服助手 <span class="dot bg-emerald-500 pulse" style="margin-right:0"></span></div>
+              </div>
+              <div class="grid grid-cols-3 gap-1.5 text-center">
+                <div class="py-1.5 bg-gray-50 rounded">
+                  <div class="num-font text-base font-semibold">59</div>
+                  <div class="text-[10px] text-gray-500">接待</div>
+                </div>
+                <div class="py-1.5 bg-gray-50 rounded">
+                  <div class="num-font text-base font-semibold text-emerald-600">3</div>
+                  <div class="text-[10px] text-gray-500">转化</div>
+                </div>
+                <div class="py-1.5 bg-gray-50 rounded">
+                  <div class="num-font text-base font-semibold">5.1<span class="text-[10px] text-gray-400">%</span></div>
+                  <div class="text-[10px] text-gray-500">转化率</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- ======================================== -->
+    <!-- PAGE: 经营管理 -->
+    <!-- ======================================== -->
+    <div id="page-jingying" class="hidden-page">
+
+    <!-- 标题栏 -->
+    <div class="flex items-start justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-semibold">经营管理</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+          <option>全部数字员工</option>
+          <option>小薯学习顾问</option>
+          <option>官方客服助手</option>
+        </select>
+        <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+          <option>近 7 天</option>
+          <option>今日</option>
+          <option>近 30 天</option>
+          <option>自定义</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-8 border-b border-gray-100 mb-6">
+      <button onclick="switchTab('overview')" id="tab-overview" class="tab-active pb-3 text-sm font-medium">经营总览</button>
+      <button onclick="switchTab('leads')" id="tab-leads" class="tab-inactive pb-3 text-sm font-medium">线索管理</button>
+      <button onclick="switchTab('quality')" id="tab-quality" class="tab-inactive pb-3 text-sm font-medium">对话质量</button>
+      <button onclick="switchTab('skills')" id="tab-skills" class="tab-inactive pb-3 text-sm font-medium">Skill 效果</button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 1: 经营总览 -->
+    <!-- ============================================ -->
+    <div id="content-overview">
+
+      <!-- 4 个核心指标 -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="card p-5">
+          <div class="text-xs text-gray-500 mb-2">私信触达</div>
+          <div class="flex items-baseline gap-2">
+            <div class="num-font text-3xl font-semibold">1,847</div>
+            <div class="text-xs text-green-600">↑ 12.4%</div>
+          </div>
+          <div class="text-xs text-gray-400 mt-2">较上周期</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-gray-500 mb-2">收集线索</div>
+          <div class="flex items-baseline gap-2">
+            <div class="num-font text-3xl font-semibold">238</div>
+            <div class="text-xs text-green-600">↑ 8.1%</div>
+          </div>
+          <div class="text-xs text-gray-400 mt-2">较上周期</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-gray-500 mb-2">高意向用户</div>
+          <div class="flex items-baseline gap-2">
+            <div class="num-font text-3xl font-semibold">62</div>
+            <div class="text-xs text-orange-600">23 待跟进</div>
+          </div>
+          <div class="text-xs text-gray-400 mt-2">意向分 ≥ 7</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-gray-500 mb-2">AI 接管率</div>
+          <div class="flex items-baseline gap-2">
+            <div class="num-font text-3xl font-semibold">96.4<span class="text-lg text-gray-400">%</span></div>
+            <div class="text-xs text-green-600">↑ 1.2%</div>
+          </div>
+          <div class="text-xs text-gray-400 mt-2">无需人工介入</div>
+        </div>
+      </div>
+
+      <!-- 转化漏斗 -->
+      <div class="card p-6 mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-semibold">转化漏斗</h3>
+          <span class="text-xs text-gray-400">点击任一环节查看明细</span>
+        </div>
+
+        <div class="grid grid-cols-6 gap-2">
+          <div class="funnel-bar cursor-pointer text-center">
+            <div class="bg-emerald-50 border border-emerald-100 rounded-xl py-5 mb-2">
+              <div class="text-xs text-gray-500 mb-1">点击进线</div>
+              <div class="num-font text-xl font-semibold text-gray-900">1,847</div>
+            </div>
+            <div class="text-xs text-gray-400">100%</div>
+          </div>
+          <div class="funnel-bar cursor-pointer text-center">
+            <div class="bg-emerald-100 border border-emerald-200 rounded-xl py-5 mb-2">
+              <div class="text-xs text-gray-600 mb-1">完成应答</div>
+              <div class="num-font text-xl font-semibold text-gray-900">1,781</div>
+            </div>
+            <div class="text-xs text-gray-500">96.4%</div>
+          </div>
+          <div class="funnel-bar cursor-pointer text-center">
+            <div class="bg-emerald-200 border border-emerald-300 rounded-xl py-5 mb-2">
+              <div class="text-xs text-gray-600 mb-1">需匹配</div>
+              <div class="num-font text-xl font-semibold text-gray-900">862</div>
+            </div>
+            <div class="text-xs text-gray-500">48.4%</div>
+          </div>
+          <div class="funnel-bar cursor-pointer text-center">
+            <div class="bg-emerald-300 border border-emerald-400 rounded-xl py-5 mb-2">
+              <div class="text-xs text-gray-700 mb-1">留资</div>
+              <div class="num-font text-xl font-semibold text-gray-900">238</div>
+            </div>
+            <div class="text-xs text-gray-500">27.6% <span class="text-orange-600">↓ 3.2%</span></div>
+          </div>
+          <div class="funnel-bar cursor-pointer text-center">
+            <div class="bg-emerald-400 border border-emerald-500 rounded-xl py-5 mb-2">
+              <div class="text-xs text-white opacity-90 mb-1">预约</div>
+              <div class="num-font text-xl font-semibold text-white">89</div>
+            </div>
+            <div class="text-xs text-gray-500">37.4%</div>
+          </div>
+          <div class="funnel-bar cursor-pointer text-center">
+            <div class="bg-emerald-500 border border-emerald-600 rounded-xl py-5 mb-2">
+              <div class="text-xs text-white opacity-90 mb-1">成交</div>
+              <div class="num-font text-xl font-semibold text-white">31</div>
+            </div>
+            <div class="text-xs text-gray-500">34.8%</div>
+          </div>
+        </div>
+
+        <!-- 漏斗洞察 -->
+        <div class="mt-5 p-4 bg-orange-50 border border-orange-100 rounded-xl flex items-start gap-3">
+          <span class="text-orange-600 text-lg">!</span>
+          <div class="text-sm">
+            <span class="font-medium text-orange-900">优化建议：</span>
+            <span class="text-orange-800">「需匹配→留资」环节较上周期下降 3.2%，建议检查「留咨卡」Skill 的话术，或开启「沉默唤醒」补救流失用户。</span>
+            <button class="ml-2 text-orange-700 underline">查看流失对话</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 趋势 + 数字员工对比 -->
+      <div class="grid grid-cols-3 gap-4">
+        <div class="card p-6 col-span-2">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">近 7 天趋势</h3>
+            <div class="flex gap-3 text-xs">
+              <span class="flex items-center gap-1"><span class="dot bg-emerald-500"></span>线索数</span>
+              <span class="flex items-center gap-1"><span class="dot bg-gray-300"></span>私信数</span>
+            </div>
+          </div>
+          <!-- 简易折线图 SVG -->
+          <svg viewBox="0 0 600 180" class="w-full h-44">
+            <defs>
+              <linearGradient id="grad1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- 网格 -->
+            <line x1="40" y1="20" x2="580" y2="20" stroke="#F3F4F6"/>
+            <line x1="40" y1="70" x2="580" y2="70" stroke="#F3F4F6"/>
+            <line x1="40" y1="120" x2="580" y2="120" stroke="#F3F4F6"/>
+            <line x1="40" y1="160" x2="580" y2="160" stroke="#E5E7EB"/>
+            <!-- 私信灰色线 -->
+            <polyline points="60,90 140,75 220,82 300,55 380,65 460,40 540,50" stroke="#D1D5DB" stroke-width="2" fill="none"/>
+            <!-- 线索绿色线 + 填充 -->
+            <polygon points="60,130 140,120 220,125 300,100 380,108 460,80 540,88 540,160 60,160" fill="url(#grad1)"/>
+            <polyline points="60,130 140,120 220,125 300,100 380,108 460,80 540,88" stroke="#10B981" stroke-width="2.5" fill="none"/>
+            <!-- 数据点 -->
+            <g fill="#10B981">
+              <circle cx="60" cy="130" r="3"/><circle cx="140" cy="120" r="3"/><circle cx="220" cy="125" r="3"/>
+              <circle cx="300" cy="100" r="3"/><circle cx="380" cy="108" r="3"/><circle cx="460" cy="80" r="3"/>
+              <circle cx="540" cy="88" r="4" stroke="white" stroke-width="2"/>
+            </g>
+            <!-- X轴 -->
+            <g font-size="11" fill="#9CA3AF" text-anchor="middle">
+              <text x="60" y="178">4/9</text><text x="140" y="178">4/10</text><text x="220" y="178">4/11</text>
+              <text x="300" y="178">4/12</text><text x="380" y="178">4/13</text><text x="460" y="178">4/14</text>
+              <text x="540" y="178" font-weight="600" fill="#374151">今日</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="card p-6">
+          <h3 class="font-semibold mb-4">数字员工排行</h3>
+          <div class="space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-xs">薯</div>
+                  <span class="text-sm font-medium">小薯学习顾问</span>
+                </div>
+                <span class="num-font text-sm font-semibold">189</span>
+              </div>
+              <div class="bg-gray-100 rounded-full h-1.5"><div class="bg-emerald-500 h-1.5 rounded-full" style="width:79%"></div></div>
+              <div class="text-xs text-gray-400 mt-1">线索数 · 转化率 32.8%</div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center text-xs">官</div>
+                  <span class="text-sm font-medium">官方客服助手</span>
+                </div>
+                <span class="num-font text-sm font-semibold">49</span>
+              </div>
+              <div class="bg-gray-100 rounded-full h-1.5"><div class="bg-purple-400 h-1.5 rounded-full" style="width:21%"></div></div>
+              <div class="text-xs text-gray-400 mt-1">线索数 · 转化率 18.4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 2: 线索管理 -->
+    <!-- ============================================ -->
+    <div id="content-leads" class="hidden-tab">
+
+      <!-- 视角切换器（销售/管理） -->
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xs text-gray-500">视角</span>
+        <div class="flex gap-0 border border-gray-200 rounded-lg overflow-hidden text-sm bg-white">
+          <button onclick="switchRole('sales')" id="role-sales" class="px-4 py-1.5 bg-gray-900 text-white font-medium">销售视角</button>
+          <button onclick="switchRole('admin')" id="role-admin" class="px-4 py-1.5 text-gray-600">管理视角</button>
+        </div>
+        <span id="role-hint" class="text-xs text-gray-400">查看 AI 跟进、我接管的线索，并回传跟进结果</span>
+      </div>
+
+      <!-- 子 Tab 切换 -->
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex gap-1 bg-gray-100 p-1 rounded-lg text-sm">
+          <button onclick="switchLeadView('all')" id="lead-all" class="px-4 py-1.5 rounded-md bg-white shadow-sm font-medium">全部线索 <span class="text-xs text-gray-400 ml-1">238</span></button>
+          <button onclick="switchLeadView('ai')" id="lead-ai" class="px-4 py-1.5 rounded-md text-gray-600">AI 跟进线索 <span class="text-xs text-gray-400 ml-1">47</span></button>
+          <button onclick="switchLeadView('mine')" id="lead-mine" class="px-4 py-1.5 rounded-md text-gray-600">我的线索 <span class="text-xs text-gray-400 ml-1">28</span></button>
+          <button onclick="switchLeadView('rule')" id="lead-rule" class="px-4 py-1.5 rounded-md text-gray-600 hidden-tab">分配规则</button>
+          <button onclick="switchLeadView('staff')" id="lead-staff" class="px-4 py-1.5 rounded-md text-gray-600 hidden-tab">员工管理</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" placeholder="搜索用户..." class="px-3 py-2 border border-gray-200 rounded-lg text-sm w-56">
+          <button class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">导出</button>
+        </div>
+      </div>
+
+      <!-- ===== 全部线索视图 ===== -->
+      <div id="leadview-all">
+
+        <!-- 顶部 4 个统计卡片 -->
+        <div class="grid grid-cols-4 gap-3 mb-4">
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">全部线索</div>
+            <div class="num-font text-2xl font-semibold">238</div>
+            <div class="text-xs text-gray-400 mt-1">本周 +89</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">AI 跟进中</div>
+            <div class="num-font text-2xl font-semibold">47</div>
+            <div class="text-xs text-blue-600 mt-1">2 条已请求转人工</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">人工跟进中</div>
+            <div class="num-font text-2xl font-semibold">128</div>
+            <div class="text-xs text-gray-400 mt-1">分给 6 位销售</div>
+          </div>
+          <div class="card p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+            <div class="text-xs opacity-80 mb-1">本周转化率</div>
+            <div class="num-font text-2xl font-semibold">26.1<span class="text-base opacity-70">%</span></div>
+            <div class="text-xs opacity-80 mt-1">↑ 较上周 +2.3%</div>
+          </div>
+        </div>
+
+        <!-- 表格 -->
+        <div class="card overflow-hidden">
+          <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="flex items-center gap-3 text-sm">
+              <input type="checkbox" class="rounded">
+              <span class="text-gray-500">已选 <b class="text-gray-900">0</b> 条</span>
+              <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="px-3 py-1 bg-white border border-gray-200 rounded-md text-xs">批量回传</button>
+              <button class="px-3 py-1 bg-white border border-gray-200 rounded-md text-xs">批量分配</button>
+            </div>
+            <div class="flex items-center gap-2 text-xs flex-wrap">
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部状态</option><option>AI 跟进</option><option>人工跟进</option><option>已转化</option><option>已流失</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部销售</option><option>李雨晴</option><option>王浩然</option><option>陈思琪</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部意向</option><option>热</option><option>温</option><option>冷</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部流量</option><option>投流</option><option>自然</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部地区</option><option>上海</option><option>北京</option><option>杭州</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+          <table class="w-full text-sm" style="min-width:1800px">
+            <thead>
+              <tr class="text-xs text-gray-500 border-b border-gray-100">
+                <th class="px-5 py-2.5 text-left font-normal w-10"></th>
+                <th class="px-3 py-2.5 text-left font-normal">用户</th>
+                <th class="px-3 py-2.5 text-left font-normal">联系方式</th>
+                <th class="px-3 py-2.5 text-left font-normal">客户画像</th>
+                <th class="px-3 py-2.5 text-left font-normal">意向</th>
+                <th class="px-3 py-2.5 text-left font-normal">沟通进展</th>
+                <th class="px-3 py-2.5 text-left font-normal">流量来源</th>
+                <th class="px-3 py-2.5 text-left font-normal">地区</th>
+                <th class="px-3 py-2.5 text-left font-normal">状态</th>
+                <th class="px-3 py-2.5 text-left font-normal">归属</th>
+                <th class="px-3 py-2.5 text-left font-normal">线索时间</th>
+                <th class="px-3 py-2.5 text-left font-normal">回传结果</th>
+                <th class="px-3 py-2.5 text-left font-normal">备注</th>
+                <th class="px-3 py-2.5 text-right font-normal pr-5">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- 1. 已转化（待回传到店/成交） -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-xs">果</div>
+                    <div>
+                      <div class="font-medium text-sm">果果妈Linda</div>
+                      <div class="text-xs text-gray-400">ID: 88239912</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 138****2156</div><div class="text-gray-500">💬 linda_guo</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>三年级数学 · ¥8k-12k/年</div>
+                  <div class="text-gray-400">偏好 1v1 · 顾虑师资</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">已成功转化</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">深圳</td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">✓ 已成交</span></td>
+                <td class="px-3 py-2.5 text-xs">陈思琪</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-12 14:22</td>
+                <td class="px-3 py-2.5">
+                  <div class="flex gap-1.5 text-[11px]">
+                    <span class="chip chip-green">✓ 预约</span>
+                    <span class="chip chip-green">✓ 到店</span>
+                    <span class="chip chip-green">✓ 成交</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs text-gray-600 max-w-[180px]">
+                  <div class="truncate" title="购买年课 ¥12800，二孩同报享 8 折">购买年课 ¥12800，二孩同报</div>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+              <!-- 2. 人工跟进中（部分回传） -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-pink-100 rounded-full flex items-center justify-center text-xs">晚</div>
+                    <div>
+                      <div class="font-medium text-sm">晚晚妈🎀</div>
+                      <div class="text-xs text-gray-400">ID: 49717571487</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 138****8821</div><div class="text-gray-500">💬 wanwan_mom</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>四年级数学思维 · ¥5k-8k/期</div>
+                  <div class="text-gray-400">接受网课 · 顾虑效果</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">预约安排中</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">上海</td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">人工跟进</span></td>
+                <td class="px-3 py-2.5 text-xs">李雨晴</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 10:57</td>
+                <td class="px-3 py-2.5">
+                  <div class="flex gap-1.5 text-[11px]">
+                    <span class="chip chip-gray">○ 预约</span>
+                    <span class="chip chip-gray">○ 到店</span>
+                    <span class="chip chip-gray">○ 成交</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs text-gray-600 max-w-[180px]">
+                  <div class="truncate" title="孩子四年级数学，预约本周六上午试听，已加微信">孩子四年级数学，预约周六试听</div>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+              <!-- 3. AI 跟进中 -->
+              <tr class="hover-row border-b border-gray-50 bg-blue-50/20">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center text-xs">夢</div>
+                    <div>
+                      <div class="font-medium text-sm">夢👙</div>
+                      <div class="text-xs text-gray-400">ID: 636562324</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 133****7777</div><div class="text-amber-600">💬 1233444 ⚠</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>高一物理 · ¥10k+/年</div>
+                  <div class="text-gray-400">偏好 1v1 · 顾虑进度</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">方案推荐中</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">重庆</td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">AI 跟进</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 10:56</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="text-emerald-600 text-xs hover:underline">接管</button>
+                </td>
+              </tr>
+
+              <!-- 4. AI 跟进 - 请求转人工 -->
+              <tr class="hover-row border-b border-gray-50 bg-amber-50/30">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs">小</div>
+                    <div>
+                      <div class="font-medium text-sm">小诺爸爸</div>
+                      <div class="text-xs text-gray-400">ID: 8821334451</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 159****3309</div><div class="text-gray-500">💬 nuo_papa_2018</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>初一英语 · ¥15k+/年</div>
+                  <div class="text-gray-400">偏好名师 1v1 · 顾虑提分</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">价格商议中</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">北京</td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">请求转人工</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 09:32</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">接管</button>
+                </td>
+              </tr>
+
+              <!-- 5. 已流失 -->
+              <tr class="hover-row border-b border-gray-50 opacity-60">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-xs">小</div>
+                    <div>
+                      <div class="font-medium text-sm">小红薯12799887712</div>
+                      <div class="text-xs text-gray-400">ID: 95223616682</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div class="text-gray-400">📞 未留</div><div class="text-amber-600">💬 -dfxsd ⚠</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>需求未明 · 预算未知</div>
+                  <div class="text-gray-400">暂无进一步信息</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">冷</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">上海市</td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">✗ 已流失</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-14 12:46</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">—</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button onclick="openChat()" class="text-gray-400 text-xs">详情</button>
+                </td>
+              </tr>
+
+              <!-- 6. 人工跟进 - 待回传 -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-green-100 rounded-full flex items-center justify-center text-xs">M</div>
+                    <div>
+                      <div class="font-medium text-sm">Mia_琳</div>
+                      <div class="text-xs text-gray-400">ID: 27716683092</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 186****0021</div><div class="text-gray-400">💬 未留</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>高一物理 · ¥8k-12k/期</div>
+                  <div class="text-gray-400">可接受小班 · 顾虑时间</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">温</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">价格商议中</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">杭州</td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">人工跟进</span></td>
+                <td class="px-3 py-2.5 text-xs">王浩然</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-14 16:08</td>
+                <td class="px-3 py-2.5">
+                  <div class="flex gap-1.5 text-[11px]">
+                    <span class="chip chip-gray">○ 预约</span>
+                    <span class="chip chip-gray">○ 到店</span>
+                    <span class="chip chip-gray">○ 成交</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs text-gray-400 max-w-[180px]">
+                  <span class="text-gray-300 italic">+ 添加备注</span>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          </div>
+
+          <div class="px-5 py-3 text-xs text-gray-400 border-t border-gray-100 flex justify-between">
+            <span>显示 6 / 238 条</span>
+            <div class="flex gap-1">
+              <button class="px-2 py-1 border border-gray-200 rounded">‹</button>
+              <button class="px-2 py-1 bg-gray-900 text-white rounded">1</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">2</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">3</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">›</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== AI 跟进线索视图 ===== -->
+      <div id="leadview-ai" class="hidden-tab">
+
+        <!-- 顶部 4 张卡片 -->
+        <div class="grid grid-cols-4 gap-3 mb-4">
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">AI 跟进中</div>
+            <div class="num-font text-2xl font-semibold">47</div>
+            <div class="text-xs text-gray-400 mt-1">本周 +18</div>
+          </div>
+          <div class="card p-4 border-orange-200 bg-orange-50/30">
+            <div class="text-xs text-orange-700 mb-1">已请求转人工</div>
+            <div class="num-font text-2xl font-semibold text-orange-700">2</div>
+            <div class="text-xs text-orange-600 mt-1">建议立即接管</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">高意向培育中</div>
+            <div class="num-font text-2xl font-semibold text-red-600">8</div>
+            <div class="text-xs text-gray-400 mt-1">热意向</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">本周升温至热</div>
+            <div class="num-font text-2xl font-semibold text-emerald-600">12</div>
+            <div class="text-xs text-gray-400 mt-1">AI 培育转化</div>
+          </div>
+        </div>
+
+        <div class="card overflow-hidden">
+          <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="flex items-center gap-3 text-sm">
+              <input type="checkbox" class="rounded">
+              <span class="text-gray-500">已选 <b class="text-gray-900">0</b> 条</span>
+              <button class="px-3 py-1 bg-white border border-gray-200 rounded-md text-xs">批量接管</button>
+              <button class="px-3 py-1 bg-white border border-gray-200 rounded-md text-xs">批量分配</button>
+            </div>
+            <div class="flex items-center gap-2 text-xs flex-wrap">
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部沟通进展</option><option>需求挖掘中</option><option>方案推荐中</option><option>方案调整中</option><option>价格商议中</option><option>预约安排中</option><option>已成功转化</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部意向</option><option>热</option><option>温</option><option>冷</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部数字员工</option><option>小薯学习顾问</option><option>官方客服助手</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+          <table class="w-full text-sm" style="min-width:1400px">
+            <thead>
+              <tr class="text-xs text-gray-500 border-b border-gray-100">
+                <th class="px-5 py-2.5 text-left font-normal w-10"></th>
+                <th class="px-3 py-2.5 text-left font-normal">用户</th>
+                <th class="px-3 py-2.5 text-left font-normal">联系方式</th>
+                <th class="px-3 py-2.5 text-left font-normal">客户画像</th>
+                <th class="px-3 py-2.5 text-left font-normal">意向</th>
+                <th class="px-3 py-2.5 text-left font-normal">沟通进展</th>
+                                <th class="px-3 py-2.5 text-left font-normal">数字员工</th>
+                <th class="px-3 py-2.5 text-left font-normal">最近对话</th>
+                <th class="px-3 py-2.5 text-right font-normal pr-5">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- 1. 请求转人工 - 高优先级橙底 -->
+              <tr class="hover-row border-b border-gray-50 bg-orange-50/30">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs">小</div>
+                    <div><div class="font-medium text-sm">小诺爸爸</div><div class="text-xs text-gray-400">北京</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 159****3309</div><div class="text-gray-500">💬 nuo_papa_2018</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>初一英语 · ¥15k+/年</div>
+                  <div class="text-gray-400">偏好名师 1v1 · 顾虑提分</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">价格商议中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">2 分钟前</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">接管</button>
+                </td>
+              </tr>
+
+              <!-- 2. 请求转人工 -->
+              <tr class="hover-row border-b border-gray-50 bg-orange-50/30">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-yellow-100 rounded-full flex items-center justify-center text-xs">糖</div>
+                    <div><div class="font-medium text-sm">糖糖妈咪</div><div class="text-xs text-gray-400">成都</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 187****4421</div><div class="text-gray-500">💬 tang_mami</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>学前启蒙 · ¥3k-5k/期</div>
+                  <div class="text-gray-400">犹豫网课 / 线下 · 价格敏感</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">价格商议中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">15 分钟前</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">接管</button>
+                </td>
+              </tr>
+
+              <!-- 3. 价格谈判阶段 -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-pink-100 rounded-full flex items-center justify-center text-xs">果</div>
+                    <div><div class="font-medium text-sm">果果妈</div><div class="text-xs text-gray-400">深圳</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 138****2156</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>三年级数学 · 未报预算</div>
+                  <div class="text-gray-400">对比多家 · 价格敏感</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">价格商议中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">5 分钟前</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="text-emerald-600 text-xs hover:underline">接管</button>
+                </td>
+              </tr>
+
+              <!-- 4. 方案推荐 -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center text-xs">夢</div>
+                    <div><div class="font-medium text-sm">夢👙</div><div class="text-xs text-gray-400">重庆</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 133****7777</div><div class="text-amber-600">💬 1233444 ⚠</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>高一物理 · ¥10k+/年</div>
+                  <div class="text-gray-400">偏好 1v1 · 顾虑进度</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">温</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">方案推荐中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">8 分钟前</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="text-emerald-600 text-xs hover:underline">接管</button>
+                </td>
+              </tr>
+
+              <!-- 5. 需求确认 -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center text-xs">阳</div>
+                    <div><div class="font-medium text-sm">阳阳的麻麻</div><div class="text-xs text-gray-400">杭州</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div class="text-gray-400">📞 未留</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>二年级语文 · ¥3k-5k/期</div>
+                  <div class="text-gray-400">接受网课 · 待确认</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">温</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">需求挖掘中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">小薯学习顾问</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">22 分钟前</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="text-emerald-600 text-xs hover:underline">接管</button>
+                </td>
+              </tr>
+
+              <!-- 6. 初次咨询 -->
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-teal-100 rounded-full flex items-center justify-center text-xs">L</div>
+                    <div><div class="font-medium text-sm">Lucky_baby</div><div class="text-xs text-gray-400">广州</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div class="text-gray-400">📞 未留</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>意向模糊 · 未提预算</div>
+                  <div class="text-gray-400">仅咨询 · 暂不紧急</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">冷</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">需求挖掘中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">官方客服助手</td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">35 分钟前</td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700 mr-3">详情</button>
+                  <button onclick="openChat()" class="text-emerald-600 text-xs hover:underline">接管</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          </div>
+
+          <div class="px-5 py-3 text-xs text-gray-400 border-t border-gray-100 flex justify-between">
+            <span>显示 6 / 47 条</span>
+            <div class="flex gap-1">
+              <button class="px-2 py-1 border border-gray-200 rounded">‹</button>
+              <button class="px-2 py-1 bg-gray-900 text-white rounded">1</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">2</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">›</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ===== 我的线索视图 ===== -->
+      <div id="leadview-mine" class="hidden-tab">
+
+        <!-- 顶部 4 张卡片 -->
+        <div class="grid grid-cols-4 gap-3 mb-4">
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">我的全部</div>
+            <div class="num-font text-2xl font-semibold">28</div>
+            <div class="text-xs text-gray-400 mt-1">本周 +6</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">今日新接管</div>
+            <div class="num-font text-2xl font-semibold text-blue-600">3</div>
+            <div class="text-xs text-gray-400 mt-1">含 AI 转交</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">已转化</div>
+            <div class="num-font text-2xl font-semibold text-emerald-600">9</div>
+            <div class="text-xs text-gray-400 mt-1">转化率 32.1%</div>
+          </div>
+          <div class="card p-4 border-orange-200 bg-orange-50/30">
+            <div class="text-xs text-orange-700 mb-1">待回传</div>
+            <div class="num-font text-2xl font-semibold text-orange-700">5</div>
+            <div class="text-xs text-orange-600 mt-1">提醒回传结果</div>
+          </div>
+        </div>
+
+        <div class="card overflow-hidden">
+          <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="text-sm">
+              <span class="font-medium">我的线索</span>
+              <span class="text-xs text-gray-400 ml-2">销售：李雨晴</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部状态</option><option>跟进中</option><option>已转化</option><option>已流失</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部意向</option><option>热</option><option>温</option><option>冷</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+          <table class="w-full text-sm" style="min-width:1450px">
+            <thead>
+              <tr class="text-xs text-gray-500 border-b border-gray-100">
+                <th class="px-5 py-2.5 text-left font-normal w-10"></th>
+                <th class="px-3 py-2.5 text-left font-normal">用户</th>
+                <th class="px-3 py-2.5 text-left font-normal">联系方式</th>
+                <th class="px-3 py-2.5 text-left font-normal">客户画像</th>
+                <th class="px-3 py-2.5 text-left font-normal">意向</th>
+                <th class="px-3 py-2.5 text-left font-normal">沟通进展</th>
+                <th class="px-3 py-2.5 text-left font-normal">来源</th>
+                <th class="px-3 py-2.5 text-left font-normal">状态</th>
+                <th class="px-3 py-2.5 text-left font-normal">接管时间</th>
+                <th class="px-3 py-2.5 text-left font-normal">回传结果</th>
+                <th class="px-3 py-2.5 text-left font-normal">备注</th>
+                <th class="px-3 py-2.5 text-right font-normal pr-5">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-pink-100 rounded-full flex items-center justify-center text-xs">晚</div>
+                    <div><div class="font-medium text-sm">晚晚妈🎀</div><div class="text-xs text-gray-400">上海</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 138****8821</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>四年级数学思维 · ¥5k-8k/期</div>
+                  <div class="text-gray-400">接受网课 · 顾虑效果</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">预约安排中</span></td>
+                <td class="px-3 py-2.5 text-xs"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">跟进中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 11:08</td>
+                <td class="px-3 py-2.5">
+                  <div class="flex gap-1.5 text-[11px]">
+                    <span class="chip chip-gray">○ 预约</span>
+                    <span class="chip chip-gray">○ 到店</span>
+                    <span class="chip chip-gray">○ 成交</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs text-gray-600 max-w-[180px]">
+                  <div class="truncate" title="孩子四年级数学，预约本周六上午试听，已加微信">孩子四年级数学，预约周六上午试听</div>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-xs">果</div>
+                    <div><div class="font-medium text-sm">果果妈Linda</div><div class="text-xs text-gray-400">深圳</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 138****2156</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>三年级数学 · ¥8k-12k/年</div>
+                  <div class="text-gray-400">偏好 1v1 · 顾虑师资</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">已成功转化</span></td>
+                <td class="px-3 py-2.5 text-xs"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">✓ 已成交</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-12 14:22</td>
+                <td class="px-3 py-2.5">
+                  <div class="flex gap-1.5 text-[11px]">
+                    <span class="chip chip-green">✓ 预约</span>
+                    <span class="chip chip-green">✓ 到店</span>
+                    <span class="chip chip-green">✓ 成交</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs text-gray-600 max-w-[180px]">
+                  <div class="truncate" title="购买年课 ¥12800，二孩同报享 8 折">购买年课 ¥12800，二孩同报</div>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+              <tr class="hover-row border-b border-gray-50 bg-orange-50/30">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs">小</div>
+                    <div><div class="font-medium text-sm">小诺爸爸</div><div class="text-xs text-gray-400">北京 · 刚接管</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 159****3309</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>初一英语 · ¥15k+/年</div>
+                  <div class="text-gray-400">偏好名师 1v1 · 顾虑提分</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">价格商议中</span></td>
+                <td class="px-3 py-2.5 text-xs"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">跟进中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">刚刚 · 从 AI 接管</td>
+                <td class="px-3 py-2.5 text-xs text-orange-600">⏱ 待跟进</td>
+                <td class="px-3 py-2.5 text-xs text-gray-400 max-w-[180px]">
+                  <span class="text-gray-300 italic">+ 添加备注</span>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-teal-100 rounded-full flex items-center justify-center text-xs">桐</div>
+                    <div><div class="font-medium text-sm">桐桐妈mama</div><div class="text-xs text-gray-400">广州</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs"><div>📞 152****0998</div></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>二年级语文 · ¥5k-8k/年</div>
+                  <div class="text-gray-400">接受网课 · 关注阅读</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">温</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">价格商议中</span></td>
+                <td class="px-3 py-2.5 text-xs"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">跟进中</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-13 10:20</td>
+                <td class="px-3 py-2.5">
+                  <div class="flex gap-1.5 text-[11px]">
+                    <span class="chip chip-green">✓ 预约</span>
+                    <span class="chip chip-green">✓ 到店</span>
+                    <span class="chip chip-gray">○ 成交</span>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5 text-xs text-gray-600 max-w-[180px]">
+                  <div class="truncate" title="试听效果不错，犹豫预算，下周再联系">试听效果不错，犹豫预算</div>
+                </td>
+                <td class="px-3 py-2.5 text-right pr-5 whitespace-nowrap">
+                  <button onclick="document.getElementById('huichuan-modal').classList.remove('hidden')" class="text-emerald-600 text-xs hover:underline mr-3">回传</button>
+                  <button onclick="openChat()" class="text-gray-400 text-xs hover:text-gray-700">详情</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 分配规则视图（管理视角） ===== -->
+      <!-- ===== 分配规则视图（管理视角） ===== -->
+      <div id="leadview-rule" class="hidden-tab">
+
+        <!-- 模式选择 -->
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          <div onclick="switchRuleMode('custom')" id="mode-custom" class="card p-4 border-2 border-emerald-500 bg-emerald-50/40 cursor-pointer relative">
+            <div class="absolute top-3 right-3 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+            <div class="font-medium text-sm text-emerald-700 mb-2">使用自定义规则自动分配</div>
+            <div class="text-xs text-gray-600 leading-relaxed">适用于中大团队，可自定义分配规则并按规则的顺序自动分配所有线索</div>
+          </div>
+          <div onclick="switchRuleMode('basic')" id="mode-basic" class="card p-4 border-2 border-gray-100 cursor-pointer hover:border-gray-300 relative">
+            <div class="font-medium text-sm mb-2">使用基本规则自动分配</div>
+            <div class="text-xs text-gray-500 leading-relaxed">适用于中小团队，仅根据所选基础规则自动分配所有线索</div>
+          </div>
+          <div onclick="switchRuleMode('manual')" id="mode-manual" class="card p-4 border-2 border-gray-100 cursor-pointer hover:border-gray-300 relative">
+            <div class="font-medium text-sm mb-2">使用手工分配</div>
+            <div class="text-xs text-gray-500 leading-relaxed">使用手工分配无需设置规则，完全以手工分配为准，分配效率较低</div>
+          </div>
+        </div>
+
+        <!-- ============ 模式 1：自定义规则 ============ -->
+        <div id="mode-content-custom" class="card p-6">
+          <div class="flex items-center justify-between mb-1">
+            <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg" onclick="document.getElementById('rule-modal').classList.remove('hidden')">+ 新建自定义规则</button>
+          </div>
+          <h3 class="font-semibold mt-5 mb-1">按排列顺序执行已有自定义规则</h3>
+          <p class="text-xs text-gray-500 mb-5">所有线索将按顺序遵循分配规则分配给销售或 AI，使用转化状态和流量来源作为筛选条件可能会存在漏发情况</p>
+
+          <div class="space-y-2">
+            <!-- 规则 1 -->
+            <div class="border border-gray-100 rounded-lg flex items-stretch hover:border-emerald-300 transition group">
+              <div class="w-12 bg-gray-50 group-hover:bg-emerald-50 flex items-center justify-center">
+                <div class="w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center text-xs font-semibold num-font">1</div>
+              </div>
+              <div class="flex-1 p-4">
+                <div class="font-medium text-sm mb-1">符合「流量类型」属于「投流」且「意向等级」属于「热」</div>
+                <div class="text-xs text-gray-500 mb-2">负责的员工组：<b class="text-gray-700">高级销售组（李雨晴、陈思琪）</b> · 分配规则：按员工组顺序轮流分配</div>
+                <div class="flex items-center gap-3 text-xs text-gray-400">
+                  <span>本周命中 23 条 · 转化率 39%</span>
+                  <span class="chip chip-green text-[10px]">运行中</span>
+                </div>
+              </div>
+              <div class="flex items-center px-4 gap-3 text-xs">
+                <button class="text-emerald-600 hover:underline">编辑</button>
+                <button class="text-gray-400 hover:text-red-600">删除</button>
+                <button class="text-gray-400 hover:text-gray-700">下移</button>
+              </div>
+            </div>
+
+            <!-- 规则 2 -->
+            <div class="border border-gray-100 rounded-lg flex items-stretch hover:border-emerald-300 transition group">
+              <div class="w-12 bg-gray-50 group-hover:bg-emerald-50 flex items-center justify-center">
+                <div class="w-7 h-7 bg-white border border-gray-200 rounded-full flex items-center justify-center text-xs font-semibold num-font">2</div>
+              </div>
+              <div class="flex-1 p-4">
+                <div class="font-medium text-sm mb-1">符合「地区」属于「北京」且「意向等级」属于「热 / 温」</div>
+                <div class="text-xs text-gray-500 mb-2">负责的员工：<b class="text-gray-700">王浩然</b> · 分配规则：按员工指定分配</div>
+                <div class="flex items-center gap-3 text-xs text-gray-400">
+                  <span>本周命中 18 条 · 转化率 27%</span>
+                  <span class="chip chip-green text-[10px]">运行中</span>
+                </div>
+              </div>
+              <div class="flex items-center px-4 gap-3 text-xs">
+                <button class="text-emerald-600 hover:underline">编辑</button>
+                <button class="text-gray-400 hover:text-red-600">删除</button>
+                <button class="text-gray-400 hover:text-gray-700">上移</button>
+                <button class="text-gray-400 hover:text-gray-700">下移</button>
+              </div>
+            </div>
+
+            <!-- 规则 3：AI -->
+            <div class="border border-purple-100 bg-purple-50/20 rounded-lg flex items-stretch hover:border-purple-300 transition group">
+              <div class="w-12 bg-purple-50 flex items-center justify-center">
+                <div class="w-7 h-7 bg-white border border-purple-200 rounded-full flex items-center justify-center text-xs font-semibold num-font">3</div>
+              </div>
+              <div class="flex-1 p-4">
+                <div class="font-medium text-sm mb-1 flex items-center gap-2">符合「意向等级」属于「温 / 冷」<span class="chip chip-purple text-[10px]">AI 规则</span></div>
+                <div class="text-xs text-gray-500 mb-2">分配给：<b class="text-purple-700">AI 继续跟进</b> · 触发条件：意向升温至「热」后再分配人工</div>
+                <div class="flex items-center gap-3 text-xs text-gray-400">
+                  <span>本周命中 47 条 · 升温至热 8 条（17%）</span>
+                  <span class="chip chip-green text-[10px]">运行中</span>
+                </div>
+              </div>
+              <div class="flex items-center px-4 gap-3 text-xs">
+                <button class="text-emerald-600 hover:underline">编辑</button>
+                <button class="text-gray-400 hover:text-red-600">删除</button>
+                <button class="text-gray-400 hover:text-gray-700">上移</button>
+                <button class="text-gray-400 hover:text-gray-700">下移</button>
+              </div>
+            </div>
+
+            <!-- 规则 4：转人工 -->
+            <div class="border border-orange-100 bg-orange-50/20 rounded-lg flex items-stretch hover:border-orange-300 transition group">
+              <div class="w-12 bg-orange-50 flex items-center justify-center">
+                <div class="w-7 h-7 bg-white border border-orange-200 rounded-full flex items-center justify-center text-xs font-semibold num-font">4</div>
+              </div>
+              <div class="flex-1 p-4">
+                <div class="font-medium text-sm mb-1 flex items-center gap-2">符合「状态」属于「请求转人工」<span class="chip chip-orange text-[10px]">即时</span></div>
+                <div class="text-xs text-gray-500 mb-2">负责的员工组：<b class="text-gray-700">在线销售（全员）</b> · 分配规则：按员工组线索数量补齐分配 · 通知方式：站内 + 微信</div>
+                <div class="flex items-center gap-3 text-xs text-gray-400">
+                  <span>本周命中 12 条 · 平均接管耗时 4 分钟</span>
+                  <span class="chip chip-green text-[10px]">运行中</span>
+                </div>
+              </div>
+              <div class="flex items-center px-4 gap-3 text-xs">
+                <button class="text-emerald-600 hover:underline">编辑</button>
+                <button class="text-gray-400 hover:text-red-600">删除</button>
+                <button class="text-gray-400 hover:text-gray-700">上移</button>
+              </div>
+            </div>
+
+            <!-- 兜底规则 -->
+            <div class="border border-dashed border-gray-300 rounded-lg flex items-stretch bg-gray-50/30 mt-3">
+              <div class="w-12 bg-gray-100 flex items-center justify-center">
+                <div class="w-7 h-7 bg-white border border-gray-300 rounded-full flex items-center justify-center text-xs font-semibold text-gray-400">∞</div>
+              </div>
+              <div class="flex-1 p-4">
+                <div class="font-medium text-sm text-gray-700 mb-1">根据以上规则分配后的剩余线索</div>
+                <div class="text-xs text-gray-500">分配给：<b class="text-gray-700">普通销售组</b> · 分配规则：按员工组线索数量补齐分配</div>
+              </div>
+              <div class="flex items-center px-4 gap-3 text-xs">
+                <button class="text-emerald-600 hover:underline">编辑</button>
+                <span class="text-gray-300">不可删除</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ 模式 2：基本规则 ============ -->
+        <div id="mode-content-basic" class="card p-6 hidden-tab">
+          <h3 class="font-semibold mb-1">基本分配规则</h3>
+          <p class="text-xs text-gray-500 mb-5">所有线索将按顺序遵循分配规则分配给销售或 AI</p>
+
+          <div class="space-y-3">
+            <!-- 选项 1 -->
+            <label class="border border-gray-200 rounded-lg p-4 flex items-start gap-3 cursor-pointer hover:border-gray-300 transition">
+              <input type="radio" name="basic-rule" class="mt-1 accent-emerald-600">
+              <div class="flex-1">
+                <div class="font-medium text-sm mb-1">按员工顺序轮流分配</div>
+                <div class="text-xs text-gray-500">分配方式：当有新线索进来时，系统查看所有在线员工然后按照顺序自动在员工间轮流分配线索</div>
+              </div>
+            </label>
+
+            <!-- 选项 2 -->
+            <label class="border border-gray-200 rounded-lg p-4 flex items-start gap-3 cursor-pointer hover:border-gray-300 transition">
+              <input type="radio" name="basic-rule" class="mt-1 accent-emerald-600">
+              <div class="flex-1">
+                <div class="font-medium text-sm mb-1">按员工组顺序轮流分配</div>
+                <div class="text-xs text-gray-500">分配方式：当有新线索进来时，系统查看所有有在线员工的员工组，然后按照顺序自动在员工组间轮流分配线索，组内按员工顺序轮流分配线索</div>
+              </div>
+            </label>
+
+            <!-- 选项 3 -->
+            <label class="border border-gray-200 rounded-lg p-4 flex items-start gap-3 cursor-pointer hover:border-gray-300 transition">
+              <input type="radio" name="basic-rule" class="mt-1 accent-emerald-600">
+              <div class="flex-1">
+                <div class="font-medium text-sm mb-1">按员工线索数量补齐分配</div>
+                <div class="text-xs text-gray-500">分配方式：当有新线索进来时，系统查看所有在线员工被分配的线索数量，然后优先分配给数量最少的员工</div>
+              </div>
+            </label>
+
+            <!-- 选项 4（默认选中） -->
+            <label class="border-2 border-emerald-500 bg-emerald-50/40 rounded-lg p-4 flex items-start gap-3 cursor-pointer transition">
+              <input type="radio" name="basic-rule" checked class="mt-1 accent-emerald-600">
+              <div class="flex-1">
+                <div class="font-medium text-sm mb-1">按员工组线索数量补齐分配</div>
+                <div class="text-xs text-gray-500 mb-3">分配方式：当有新线索进来时，系统查看所有在线员工的员工组被分配的线索数量，然后优先分配给数量最少的员工组，组内按照线索数量补齐分配给线索数量最少的在线员工</div>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="text-gray-600">当前参与分配的员工组：</span>
+                  <span class="chip chip-blue">高级销售组</span>
+                  <span class="chip chip-blue">普通销售组</span>
+                  <button class="text-emerald-600 hover:underline ml-1">选择员工组</button>
+                </div>
+              </div>
+            </label>
+
+            <!-- 选项 5：AI -->
+            <label class="border-2 border-purple-200 bg-purple-50/30 rounded-lg p-4 flex items-start gap-3 cursor-pointer transition">
+              <input type="radio" name="basic-rule" class="mt-1 accent-purple-600">
+              <div class="flex-1">
+                <div class="font-medium text-sm mb-1 flex items-center gap-2">
+                  全部交给 AI 跟进
+                  <span class="chip chip-purple text-[10px]">AI 模式</span>
+                </div>
+                <div class="text-xs text-gray-500">分配方式：所有新线索默认由 AI 自动跟进，AI 培育至「热意向」或用户主动请求转人工时，再分配给在线销售</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="flex justify-end gap-2 mt-6 pt-5 border-t border-gray-100">
+            <button class="px-4 py-2 border border-gray-200 rounded-lg text-sm">取消</button>
+            <button class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">保存</button>
+          </div>
+        </div>
+
+        <!-- ============ 模式 3：手工分配 ============ -->
+        <div id="mode-content-manual" class="card overflow-hidden hidden-tab">
+          <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="flex items-center gap-3 text-sm">
+              <input type="checkbox" class="rounded">
+              <span class="text-gray-500">已选 <b class="text-gray-900">0</b> 条</span>
+              <button class="px-3 py-1 bg-white border border-gray-200 rounded-md text-xs">批量分配给...</button>
+              <button class="px-3 py-1 bg-white border border-gray-200 rounded-md text-xs">批量交给 AI</button>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部状态</option><option>待分配</option><option>已分配</option>
+              </select>
+              <select class="px-2 py-1 border border-gray-200 rounded">
+                <option>全部意向</option><option>热</option><option>温</option><option>冷</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+          <table class="w-full text-sm" style="min-width:1250px">
+            <thead>
+              <tr class="text-xs text-gray-500 border-b border-gray-100">
+                <th class="px-5 py-2.5 text-left font-normal w-10"></th>
+                <th class="px-3 py-2.5 text-left font-normal">用户</th>
+                <th class="px-3 py-2.5 text-left font-normal">联系方式</th>
+                <th class="px-3 py-2.5 text-left font-normal">客户画像</th>
+                <th class="px-3 py-2.5 text-left font-normal">意向</th>
+                <th class="px-3 py-2.5 text-left font-normal">来源</th>
+                <th class="px-3 py-2.5 text-left font-normal">地区</th>
+                <th class="px-3 py-2.5 text-left font-normal">状态</th>
+                <th class="px-3 py-2.5 text-left font-normal">线索时间</th>
+                <th class="px-3 py-2.5 text-right font-normal pr-5">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5"><div class="flex items-center gap-2.5"><div class="w-7 h-7 bg-pink-100 rounded-full flex items-center justify-center text-xs">晚</div><div class="font-medium text-sm">晚晚妈</div></div></td>
+                <td class="px-3 py-2.5 text-xs">138****8821</td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>四年级数学思维 · ¥5k-8k/期</div>
+                  <div class="text-gray-400">接受网课 · 顾虑效果</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">上海</td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">待分配</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 10:57</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">立即分配</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5"><div class="flex items-center gap-2.5"><div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs">小</div><div class="font-medium text-sm">小诺爸爸</div></div></td>
+                <td class="px-3 py-2.5 text-xs">159****3309</td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>初一英语 · ¥15k+/年</div>
+                  <div class="text-gray-400">偏好名师 1v1 · 顾虑提分</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-red">热</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-purple">投流</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">北京</td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">待分配</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 09:32</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">立即分配</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5"><div class="flex items-center gap-2.5"><div class="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center text-xs">夢</div><div class="font-medium text-sm">夢</div></div></td>
+                <td class="px-3 py-2.5 text-xs">133****7777</td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>高一物理 · ¥10k+/年</div>
+                  <div class="text-gray-400">偏好 1v1 · 顾虑进度</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">温</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">重庆</td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">待分配</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 10:56</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">立即分配</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5"><div class="flex items-center gap-2.5"><div class="w-7 h-7 bg-green-100 rounded-full flex items-center justify-center text-xs">M</div><div class="font-medium text-sm">Mia_琳</div></div></td>
+                <td class="px-3 py-2.5 text-xs">186****0021</td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>高一物理 · ¥8k-12k/期</div>
+                  <div class="text-gray-400">可接受小班 · 顾虑时间</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">温</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">杭州</td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">待分配</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-15 08:14</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">立即分配</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5"><div class="flex items-center gap-2.5"><div class="w-7 h-7 bg-yellow-100 rounded-full flex items-center justify-center text-xs">糖</div><div class="font-medium text-sm">糖糖妈咪</div></div></td>
+                <td class="px-3 py-2.5 text-xs">187****4421</td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">
+                  <div>学前启蒙 · ¥3k-5k/期</div>
+                  <div class="text-gray-400">犹豫网课 / 线下 · 价格敏感</div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">冷</span></td>
+                <td class="px-3 py-2.5"><span class="chip chip-green">自然</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">成都</td>
+                <td class="px-3 py-2.5"><span class="chip chip-orange">待分配</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-500">04-14 22:08</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="px-2.5 py-1 bg-gray-900 text-white text-xs rounded">立即分配</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="px-5 py-3 text-xs text-gray-400 border-t border-gray-100 flex justify-between">
+            <span>显示 5 / 47 条</span>
+            <div class="flex gap-1">
+              <button class="px-2 py-1 border border-gray-200 rounded">‹</button>
+              <button class="px-2 py-1 bg-gray-900 text-white rounded">1</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">2</button>
+              <button class="px-2 py-1 border border-gray-200 rounded">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 员工管理视图（管理视角） ===== -->
+      <div id="leadview-staff" class="hidden-tab">
+
+        <!-- 顶部：4 个汇总 + 操作按钮 -->
+        <div class="grid grid-cols-4 gap-3 mb-4">
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">员工总数</div>
+            <div class="num-font text-2xl font-semibold">12</div>
+            <div class="text-xs text-gray-400 mt-1">在线 8 · 离线 4</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">员工组</div>
+            <div class="num-font text-2xl font-semibold">3</div>
+            <div class="text-xs text-gray-400 mt-1">高级 / 普通 / 实习</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">本周分配线索</div>
+            <div class="num-font text-2xl font-semibold">186</div>
+            <div class="text-xs text-gray-400 mt-1">人均 15.5 条</div>
+          </div>
+          <div class="card p-4">
+            <div class="text-xs text-gray-500 mb-1">团队转化率</div>
+            <div class="num-font text-2xl font-semibold text-emerald-600">26.1<span class="text-base text-gray-400">%</span></div>
+            <div class="text-xs text-gray-400 mt-1">较上周 +2.3%</div>
+          </div>
+        </div>
+
+        <!-- 操作栏 -->
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex gap-1 bg-gray-100 p-1 rounded-lg text-sm">
+            <button onclick="switchStaffTab('staff-list')" id="staff-tab-list" class="px-4 py-1.5 rounded-md bg-white shadow-sm font-medium">员工列表</button>
+            <button onclick="switchStaffTab('staff-group')" id="staff-tab-group" class="px-4 py-1.5 rounded-md text-gray-600">员工组管理</button>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">批量上传</button>
+            <button class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">导入模板</button>
+            <button class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">+ 新增员工</button>
+          </div>
+        </div>
+
+        <!-- 员工列表 -->
+        <div id="staff-content-list" class="card overflow-hidden">
+          <div class="overflow-x-auto">
+          <table class="w-full text-sm" style="min-width:1450px">
+            <thead>
+              <tr class="text-xs text-gray-500 border-b border-gray-100 bg-gray-50">
+                <th class="px-5 py-2.5 text-left font-normal w-10"><input type="checkbox" class="rounded"></th>
+                <th class="px-3 py-2.5 text-left font-normal">员工</th>
+                <th class="px-3 py-2.5 text-left font-normal">员工组</th>
+                <th class="px-3 py-2.5 text-left font-normal">关联账号</th>
+                <th class="px-3 py-2.5 text-left font-normal">在线状态</th>
+                <th class="px-3 py-2.5 text-right font-normal">跟进中</th>
+                <th class="px-3 py-2.5 text-right font-normal">本周转化</th>
+                <th class="px-3 py-2.5 text-right font-normal">转化率</th>
+                <th class="px-3 py-2.5 text-right font-normal">回传率</th>
+                <th class="px-3 py-2.5 text-right font-normal pr-5">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-xs font-medium">李</div>
+                    <div><div class="font-medium text-sm">李雨晴</div><div class="text-xs text-gray-400">销售组长 · 工号 S001</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">高级销售组</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">小薯学习顾问<br><span class="text-gray-400">官方客服助手</span></td>
+                <td class="px-3 py-2.5"><span class="flex items-center gap-1.5 text-xs"><span class="dot bg-emerald-500" style="margin-right:0"></span>在线</span></td>
+                <td class="px-3 py-2.5 text-right num-font">28</td>
+                <td class="px-3 py-2.5 text-right num-font text-emerald-600">9</td>
+                <td class="px-3 py-2.5 text-right num-font">32.1%</td>
+                <td class="px-3 py-2.5 text-right num-font">94%</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="text-emerald-600 text-xs hover:underline mr-2">详情</button>
+                  <button class="text-gray-400 text-xs hover:text-gray-700">编辑</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-medium">王</div>
+                    <div><div class="font-medium text-sm">王浩然</div><div class="text-xs text-gray-400">销售 · 工号 S002</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">高级销售组</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">小薯学习顾问</td>
+                <td class="px-3 py-2.5"><span class="flex items-center gap-1.5 text-xs"><span class="dot bg-emerald-500" style="margin-right:0"></span>在线</span></td>
+                <td class="px-3 py-2.5 text-right num-font">22</td>
+                <td class="px-3 py-2.5 text-right num-font text-emerald-600">6</td>
+                <td class="px-3 py-2.5 text-right num-font">27.3%</td>
+                <td class="px-3 py-2.5 text-right num-font">87%</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="text-emerald-600 text-xs hover:underline mr-2">详情</button>
+                  <button class="text-gray-400 text-xs hover:text-gray-700">编辑</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-xs font-medium">陈</div>
+                    <div><div class="font-medium text-sm">陈思琪</div><div class="text-xs text-gray-400">销售 · 工号 S003</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-blue">高级销售组</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">小薯学习顾问</td>
+                <td class="px-3 py-2.5"><span class="flex items-center gap-1.5 text-xs"><span class="dot bg-gray-300" style="margin-right:0"></span>离线</span></td>
+                <td class="px-3 py-2.5 text-right num-font">19</td>
+                <td class="px-3 py-2.5 text-right num-font text-emerald-600">7</td>
+                <td class="px-3 py-2.5 text-right num-font">36.8%</td>
+                <td class="px-3 py-2.5 text-right num-font">91%</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="text-emerald-600 text-xs hover:underline mr-2">详情</button>
+                  <button class="text-gray-400 text-xs hover:text-gray-700">编辑</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50 bg-orange-50/20">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-xs font-medium">赵</div>
+                    <div><div class="font-medium text-sm">赵子墨</div><div class="text-xs text-gray-400">销售 · 工号 S004</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">普通销售组</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-600">官方客服助手</td>
+                <td class="px-3 py-2.5"><span class="flex items-center gap-1.5 text-xs"><span class="dot bg-emerald-500" style="margin-right:0"></span>在线</span></td>
+                <td class="px-3 py-2.5 text-right num-font">25</td>
+                <td class="px-3 py-2.5 text-right num-font text-emerald-600">4</td>
+                <td class="px-3 py-2.5 text-right num-font text-orange-600">16.0%</td>
+                <td class="px-3 py-2.5 text-right num-font text-orange-600">68%</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="text-emerald-600 text-xs hover:underline mr-2">详情</button>
+                  <button class="text-gray-400 text-xs hover:text-gray-700">编辑</button>
+                </td>
+              </tr>
+              <tr class="hover-row border-b border-gray-50">
+                <td class="px-5 py-2.5"><input type="checkbox" class="rounded"></td>
+                <td class="px-3 py-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center text-xs font-medium">孙</div>
+                    <div><div class="font-medium text-sm">孙佳怡</div><div class="text-xs text-gray-400">销售 · 工号 S005</div></div>
+                  </div>
+                </td>
+                <td class="px-3 py-2.5"><span class="chip chip-gray">实习销售组</span></td>
+                <td class="px-3 py-2.5 text-xs text-gray-400">未关联</td>
+                <td class="px-3 py-2.5"><span class="flex items-center gap-1.5 text-xs"><span class="dot bg-emerald-500" style="margin-right:0"></span>在线</span></td>
+                <td class="px-3 py-2.5 text-right num-font">18</td>
+                <td class="px-3 py-2.5 text-right num-font text-emerald-600">3</td>
+                <td class="px-3 py-2.5 text-right num-font">16.7%</td>
+                <td class="px-3 py-2.5 text-right num-font">75%</td>
+                <td class="px-3 py-2.5 text-right pr-5">
+                  <button class="text-emerald-600 text-xs hover:underline mr-2">详情</button>
+                  <button class="text-gray-400 text-xs hover:text-gray-700">编辑</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="px-5 py-3 text-xs text-gray-400 border-t border-gray-100">显示 5 / 12 条</div>
+        </div>
+
+        <!-- 员工组管理（隐藏） -->
+        <div id="staff-content-group" class="card p-6 hidden-tab">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">员工组列表</h3>
+            <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg">+ 新建员工组</button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="border border-gray-100 rounded-lg p-4 hover:border-emerald-200 transition">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="font-medium mb-1">高级销售组</div>
+                  <div class="text-xs text-gray-500">3 名成员 · 主要负责热意向 / 投流线索</div>
+                </div>
+                <div class="flex gap-2 text-xs">
+                  <button class="text-emerald-600 hover:underline">编辑</button>
+                  <button class="text-gray-400 hover:text-red-600">删除</button>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-50">
+                <div class="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded text-xs">
+                  <div class="w-5 h-5 bg-pink-100 rounded-full flex items-center justify-center text-[10px]">李</div>
+                  <span>李雨晴</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded text-xs">
+                  <div class="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center text-[10px]">王</div>
+                  <span>王浩然</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded text-xs">
+                  <div class="w-5 h-5 bg-purple-100 rounded-full flex items-center justify-center text-[10px]">陈</div>
+                  <span>陈思琪</span>
+                </div>
+                <button class="px-2 py-1 border border-dashed border-gray-300 rounded text-xs text-gray-500 hover:border-gray-400">+ 添加成员</button>
+              </div>
+            </div>
+
+            <div class="border border-gray-100 rounded-lg p-4 hover:border-emerald-200 transition">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="font-medium mb-1">普通销售组</div>
+                  <div class="text-xs text-gray-500">5 名成员 · 接收常规分配的线索</div>
+                </div>
+                <div class="flex gap-2 text-xs">
+                  <button class="text-emerald-600 hover:underline">编辑</button>
+                  <button class="text-gray-400 hover:text-red-600">删除</button>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-50">
+                <div class="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded text-xs">
+                  <div class="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center text-[10px]">赵</div>
+                  <span>赵子墨</span>
+                </div>
+                <button class="px-2 py-1 border border-dashed border-gray-300 rounded text-xs text-gray-500 hover:border-gray-400">+ 添加成员</button>
+              </div>
+            </div>
+
+            <div class="border border-gray-100 rounded-lg p-4 hover:border-emerald-200 transition">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <div class="font-medium mb-1">实习销售组</div>
+                  <div class="text-xs text-gray-500">4 名成员 · 接收冷意向 / 自然流量线索</div>
+                </div>
+                <div class="flex gap-2 text-xs">
+                  <button class="text-emerald-600 hover:underline">编辑</button>
+                  <button class="text-gray-400 hover:text-red-600">删除</button>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-50">
+                <div class="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded text-xs">
+                  <div class="w-5 h-5 bg-teal-100 rounded-full flex items-center justify-center text-[10px]">孙</div>
+                  <span>孙佳怡</span>
+                </div>
+                <button class="px-2 py-1 border border-dashed border-gray-300 rounded text-xs text-gray-500 hover:border-gray-400">+ 添加成员</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============ 新建规则弹窗 ============ -->
+      <div id="rule-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6" onclick="if(event.target===this) this.classList.add('hidden')">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between p-5 border-b border-gray-100">
+            <h3 class="font-semibold text-lg">新增自定义分配规则</h3>
+            <button onclick="document.getElementById('rule-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 text-xl">×</button>
+          </div>
+
+          <div class="p-6 space-y-6">
+
+            <!-- 条件区 -->
+            <div>
+              <div class="text-sm font-medium mb-3">符合以下全部条件的线索：</div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="text-gray-500 text-xs">当线索的</span>
+                  <select class="px-2 py-1.5 border border-gray-200 rounded text-sm">
+                    <option>流量类型</option><option>意向等级</option><option>沟通进展</option><option>状态</option><option>地区</option><option>归属数字员工</option><option>转化方式</option>
+                  </select>
+                  <span class="text-gray-500 text-xs">属于以下任意</span>
+                  <div class="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm flex flex-wrap gap-1 min-h-[36px]">
+                    <span class="chip chip-purple">投流 ×</span>
+                  </div>
+                  <button class="text-gray-400 hover:text-red-600 text-sm">删除</button>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="text-gray-500 text-xs">当线索的</span>
+                  <select class="px-2 py-1.5 border border-gray-200 rounded text-sm">
+                    <option>意向等级</option>
+                  </select>
+                  <span class="text-gray-500 text-xs">属于以下任意</span>
+                  <div class="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm flex flex-wrap gap-1 min-h-[36px]">
+                    <span class="chip chip-red">热 ×</span>
+                  </div>
+                  <button class="text-gray-400 hover:text-red-600 text-sm">删除</button>
+                </div>
+                <button class="text-emerald-600 text-sm hover:underline">+ 新增筛选的条件</button>
+              </div>
+            </div>
+
+            <!-- 分配方式 -->
+            <div>
+              <div class="text-sm font-medium mb-3">分配给：</div>
+              <div class="flex gap-0 border border-gray-200 rounded-lg overflow-hidden text-sm mb-4 w-fit">
+                <button onclick="switchAssignType('staff')" id="assign-staff" class="px-4 py-1.5 text-gray-600 hover:bg-gray-50">按员工分配</button>
+                <button onclick="switchAssignType('group')" id="assign-group" class="px-4 py-1.5 bg-gray-900 text-white">按员工组分配</button>
+                <button onclick="switchAssignType('ai')" id="assign-ai" class="px-4 py-1.5 text-purple-600 hover:bg-purple-50">交给 AI</button>
+              </div>
+
+              <!-- 按员工分配 -->
+              <div id="assign-content-staff" class="hidden-tab">
+                <div class="text-xs text-gray-500 mb-2">* 选择员工</div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="border border-gray-200 rounded-lg p-3 max-h-[200px] overflow-y-auto">
+                    <input type="text" placeholder="搜索员工..." class="w-full px-2 py-1 border border-gray-100 rounded text-xs mb-2">
+                    <div class="space-y-1.5 text-sm">
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded"> 全选
+                      </label>
+                      <div class="text-[10px] text-gray-400 px-1 mt-2">高级销售组</div>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded bg-emerald-50">
+                        <input type="checkbox" checked class="rounded accent-emerald-600">
+                        <div class="w-5 h-5 bg-pink-100 rounded-full flex items-center justify-center text-[10px]">李</div>
+                        李雨晴
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded">
+                        <div class="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center text-[10px]">王</div>
+                        王浩然
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded">
+                        <div class="w-5 h-5 bg-purple-100 rounded-full flex items-center justify-center text-[10px]">陈</div>
+                        陈思琪
+                      </label>
+                      <div class="text-[10px] text-gray-400 px-1 mt-2">普通销售组</div>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded">
+                        <div class="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center text-[10px]">赵</div>
+                        赵子墨
+                      </label>
+                    </div>
+                  </div>
+                  <div class="border border-gray-200 rounded-lg p-3 max-h-[200px] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-gray-100">
+                      <span class="text-xs text-gray-500">已选 1 人</span>
+                      <button class="text-xs text-gray-400 hover:text-red-600">全部清空</button>
+                    </div>
+                    <div class="space-y-1.5 text-sm">
+                      <div class="flex items-center justify-between bg-gray-50 px-2 py-1.5 rounded">
+                        <div class="flex items-center gap-2">
+                          <div class="w-5 h-5 bg-pink-100 rounded-full flex items-center justify-center text-[10px]">李</div>
+                          <span>李雨晴</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-red-600 text-xs">×</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="text-xs text-gray-500 mb-2">* 分配算法</div>
+                  <div class="flex gap-0 border border-gray-200 rounded-lg overflow-hidden text-sm w-fit">
+                    <button class="px-4 py-1.5 bg-gray-900 text-white">按员工指定分配</button>
+                    <button class="px-4 py-1.5 text-gray-600 hover:bg-gray-50">按员工顺序轮流分配</button>
+                    <button class="px-4 py-1.5 text-gray-600 hover:bg-gray-50">按员工线索数量补齐分配</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 按员工组分配 -->
+              <div id="assign-content-group">
+                <div class="text-xs text-gray-500 mb-2">* 选择员工组</div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="border border-gray-200 rounded-lg p-3 max-h-[200px] overflow-y-auto">
+                    <div class="text-xs text-gray-500 mb-2 pb-1.5 border-b border-gray-100">员工组</div>
+                    <div class="space-y-1.5 text-sm">
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded"> 全选
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded"> 默认分组
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded bg-emerald-50">
+                        <input type="checkbox" checked class="rounded accent-emerald-600"> 高级销售组
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded"> 普通销售组
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-1 rounded">
+                        <input type="checkbox" class="rounded"> 实习销售组
+                      </label>
+                    </div>
+                  </div>
+                  <div class="border border-gray-200 rounded-lg p-3 max-h-[200px] overflow-y-auto">
+                    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-gray-100">
+                      <span class="text-xs text-gray-500">已选</span>
+                      <button class="text-xs text-gray-400 hover:text-red-600">全部清空</button>
+                    </div>
+                    <div class="space-y-1.5 text-sm">
+                      <div class="flex items-center justify-between bg-gray-50 px-2 py-1.5 rounded">
+                        <span>高级销售组</span>
+                        <button class="text-gray-400 hover:text-red-600 text-xs">×</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="text-xs text-gray-500 mb-2">* 分配算法</div>
+                  <div class="flex gap-0 border border-gray-200 rounded-lg overflow-hidden text-sm w-fit">
+                    <button class="px-4 py-1.5 bg-gray-900 text-white">按员工组顺序轮流分配</button>
+                    <button class="px-4 py-1.5 text-gray-600 hover:bg-gray-50">按员工组线索数量补齐分配</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 交给 AI -->
+              <div id="assign-content-ai" class="hidden-tab">
+                <div class="border border-purple-200 bg-purple-50/30 rounded-lg p-4">
+                  <div class="text-sm font-medium text-purple-900 mb-3">分配给 AI 数字员工</div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-gray-600 mb-2">* 选择数字员工</div>
+                      <select class="w-full px-3 py-2 border border-gray-200 rounded text-sm bg-white">
+                        <option>小薯学习顾问</option>
+                        <option>官方客服助手</option>
+                      </select>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-600 mb-2">触发条件（满足任一条件后转给人工）</div>
+                      <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-purple-600 rounded"> 意向升温至「热」</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-purple-600 rounded"> 用户主动请求转人工</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" class="accent-purple-600 rounded"> 对话超过 N 轮无进展（N=<input type="number" value="10" class="w-12 px-1 py-0.5 border border-gray-200 rounded text-center mx-1">）</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100 p-4 flex justify-end gap-2 bg-gray-50">
+            <button onclick="document.getElementById('rule-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white">取消</button>
+            <button onclick="document.getElementById('rule-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">保存</button>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+    <!-- ============================================ -->
+    <!-- TAB 3: 对话质量 -->
+    <!-- ============================================ -->
+    <div id="content-quality" class="hidden-tab">
+
+      <!-- 质量评分 -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="card p-5 col-span-2 bg-gradient-to-br from-gray-900 to-gray-700 text-white">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <div class="text-xs opacity-70 mb-1">AI 对话综合质量分</div>
+              <div class="num-font text-5xl font-semibold">87.2</div>
+            </div>
+            <div class="text-right text-xs opacity-70">
+              <div>↑ 较上周 +2.1</div>
+              <div class="mt-1">行业均值 79.4</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-white/20 text-center">
+            <div><div class="num-font font-semibold">92</div><div class="text-xs opacity-70">理解准确</div></div>
+            <div><div class="num-font font-semibold">88</div><div class="text-xs opacity-70">回答相关</div></div>
+            <div><div class="num-font font-semibold">85</div><div class="text-xs opacity-70">语气自然</div></div>
+            <div><div class="num-font font-semibold">84</div><div class="text-xs opacity-70">引导转化</div></div>
+          </div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-gray-500 mb-1">需关注对话</div>
+          <div class="num-font text-3xl font-semibold text-orange-600">17</div>
+          <div class="text-xs text-gray-400 mt-2">置信度 < 60% 或用户负反馈</div>
+          <button onclick="openChat()" class="mt-3 text-xs text-emerald-600 underline">查看 →</button>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-gray-500 mb-1">知识库未命中</div>
+          <div class="num-font text-3xl font-semibold text-gray-700">42</div>
+          <div class="text-xs text-gray-400 mt-2">建议补充内容库文档</div>
+          <button class="mt-3 text-xs text-emerald-600 underline">查看建议 →</button>
+        </div>
+      </div>
+
+      <!-- 三卡片：意图分布 + 低质对话 + 知识缺口 -->
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="card p-6">
+          <h3 class="font-semibold mb-4">用户意图分布</h3>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>试听课咨询</span><span class="text-gray-500 num-font text-xs">486 · 38%</span></div>
+              <div class="bg-gray-100 rounded-full h-2"><div class="bg-emerald-500 h-2 rounded-full" style="width:78%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>课程价格</span><span class="text-gray-500 num-font text-xs">312 · 24%</span></div>
+              <div class="bg-gray-100 rounded-full h-2"><div class="bg-emerald-400 h-2 rounded-full" style="width:50%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>师资介绍</span><span class="text-gray-500 num-font text-xs">198 · 15%</span></div>
+              <div class="bg-gray-100 rounded-full h-2"><div class="bg-emerald-300 h-2 rounded-full" style="width:32%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>退费政策</span><span class="text-gray-500 num-font text-xs">142 · 11%</span></div>
+              <div class="bg-gray-100 rounded-full h-2"><div class="bg-amber-400 h-2 rounded-full" style="width:23%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-1"><span>其他/未识别</span><span class="text-gray-500 num-font text-xs">152 · 12%</span></div>
+              <div class="bg-gray-100 rounded-full h-2"><div class="bg-gray-300 h-2 rounded-full" style="width:24%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold">需优化对话样本</h3>
+            <span class="chip chip-orange">17 条</span>
+          </div>
+          <div class="space-y-3">
+            <div onclick="openChat()" class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500">果果妈 · 2 小时前</span>
+                <span class="chip chip-red text-[10px]">置信度 42%</span>
+              </div>
+              <div class="text-xs text-gray-700 mb-1 truncate" title="老师有教师资格证吗？外教是英语母语吗？">"老师有教师资格证吗？外教是英语母语吗？"</div>
+              <div class="text-[11px] text-orange-600 truncate">⚠ 未命中知识库 · 建议补充《师资资质说明》</div>
+            </div>
+            <div onclick="openChat()" class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500">桐桐 · 3 小时前</span>
+                <span class="chip chip-red text-[10px]">用户负反馈</span>
+              </div>
+              <div class="text-xs text-gray-700 mb-1 truncate" title="我想退课，能退多少钱？">"我想退课，能退多少钱？"</div>
+              <div class="text-[11px] text-orange-600 truncate">⚠ 涉及退费 · 建议转人工</div>
+            </div>
+            <div onclick="openChat()" class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500">Lucky · 5 小时前</span>
+                <span class="chip chip-orange text-[10px]">置信度 58%</span>
+              </div>
+              <div class="text-xs text-gray-700 mb-1 truncate" title="上海徐汇校区在哪里，能预约线下试听吗？">"上海徐汇校区在哪里，能预约线下试听吗？"</div>
+              <div class="text-[11px] text-orange-600 truncate">⚠ 未命中线下校区信息</div>
+            </div>
+          </div>
+          <button onclick="openChat()" class="mt-3 w-full py-2 text-xs text-gray-600 border border-gray-100 rounded-lg hover:bg-gray-50">查看全部 17 条 →</button>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="font-semibold">知识缺口建议</h3>
+              <p class="text-xs text-gray-500 mt-1">基于未命中问题聚类</p>
+            </div>
+            <button class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[11px] rounded-lg border border-emerald-100 whitespace-nowrap">一键补充</button>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="min-w-0 flex-1 pr-2">
+                <div class="text-sm font-medium truncate">师资资质 / 教师证书</div>
+                <div class="text-xs text-gray-500 mt-0.5">12 次未命中 · 9 位用户</div>
+              </div>
+              <button class="text-xs text-emerald-600 underline shrink-0">补充</button>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="min-w-0 flex-1 pr-2">
+                <div class="text-sm font-medium truncate">退费 / 转课政策</div>
+                <div class="text-xs text-gray-500 mt-0.5">8 次未命中 · 流失高</div>
+              </div>
+              <button class="text-xs text-emerald-600 underline shrink-0">补充</button>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="min-w-0 flex-1 pr-2">
+                <div class="text-sm font-medium truncate">线下校区 / 预约方式</div>
+                <div class="text-xs text-gray-500 mt-0.5">7 次未命中</div>
+              </div>
+              <button class="text-xs text-emerald-600 underline shrink-0">补充</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 4: Skill 效果 -->
+    <!-- ============================================ -->
+    <div id="content-skills" class="hidden-tab">
+
+      <div class="card p-6 mb-4">
+        <div class="flex items-center justify-between mb-1">
+          <h3 class="font-semibold">Skill 效果排行</h3>
+          <span class="text-xs text-gray-400">按本周期带来的线索数排序</span>
+        </div>
+        <p class="text-sm text-gray-500 mb-5">查看每个已开启 Skill 的实际经营贡献</p>
+
+        <div class="space-y-3">
+          <!-- Skill 1 -->
+          <div class="border border-gray-100 rounded-xl p-4 hover:border-emerald-200 transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center text-white">📨</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-medium">留咨卡</span>
+                  <span class="chip chip-green">运行中</span>
+                </div>
+                <div class="text-xs text-gray-500">收集用户联系方式，自动生成线索</div>
+              </div>
+              <div class="grid grid-cols-4 gap-6 text-center">
+                <div><div class="num-font text-lg font-semibold">682</div><div class="text-xs text-gray-400">触发</div></div>
+                <div><div class="num-font text-lg font-semibold">34.8%</div><div class="text-xs text-gray-400">完成率</div></div>
+                <div><div class="num-font text-lg font-semibold text-emerald-600">238</div><div class="text-xs text-gray-400">带来线索</div></div>
+                <div><span class="chip chip-green">✓ 优秀</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-gray-100 rounded-xl p-4 hover:border-emerald-200 transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center text-white">🏷️</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-medium">意向评论回复</span>
+                  <span class="chip chip-green">运行中</span>
+                </div>
+                <div class="text-xs text-gray-500">用户发意向评论，AI 自动私信触达</div>
+              </div>
+              <div class="grid grid-cols-4 gap-6 text-center">
+                <div><div class="num-font text-lg font-semibold">1,156</div><div class="text-xs text-gray-400">触发</div></div>
+                <div><div class="num-font text-lg font-semibold">89.7%</div><div class="text-xs text-gray-400">送达率</div></div>
+                <div><div class="num-font text-lg font-semibold text-emerald-600">198</div><div class="text-xs text-gray-400">带来对话</div></div>
+                <div><span class="chip chip-green">✓ 优秀</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-gray-100 rounded-xl p-4 hover:border-emerald-200 transition">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center text-white">📦</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-medium">产品推荐卡</span>
+                  <span class="chip chip-green">运行中</span>
+                </div>
+                <div class="text-xs text-gray-500">AI 判断意向，主动推送产品卡片</div>
+              </div>
+              <div class="grid grid-cols-4 gap-6 text-center">
+                <div><div class="num-font text-lg font-semibold">421</div><div class="text-xs text-gray-400">推送</div></div>
+                <div><div class="num-font text-lg font-semibold">42.3%</div><div class="text-xs text-gray-400">点击率</div></div>
+                <div><div class="num-font text-lg font-semibold text-emerald-600">87</div><div class="text-xs text-gray-400">带来线索</div></div>
+                <div><span class="chip chip-green">✓ 良好</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-orange-200 bg-orange-50/30 rounded-xl p-4">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center text-white">🔔</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-medium">沉默唤醒</span>
+                  <span class="chip chip-green">运行中</span>
+                </div>
+                <div class="text-xs text-orange-700">⚠ 完成率偏低，建议优化文案或调整唤醒时机</div>
+              </div>
+              <div class="grid grid-cols-4 gap-6 text-center">
+                <div><div class="num-font text-lg font-semibold">312</div><div class="text-xs text-gray-400">触发</div></div>
+                <div><div class="num-font text-lg font-semibold text-orange-600">11.9%</div><div class="text-xs text-gray-400">回应率</div></div>
+                <div><div class="num-font text-lg font-semibold">37</div><div class="text-xs text-gray-400">带来线索</div></div>
+                <div><button onclick="document.getElementById('skill-optimize-modal').classList.remove('hidden')" class="px-3 py-1 bg-gray-900 text-white text-xs rounded-md">优化建议</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border border-gray-100 rounded-xl p-4 hover:border-emerald-200 transition opacity-60">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-gray-300 rounded-lg flex items-center justify-center text-white">📅</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-medium text-gray-600">预约引导</span>
+                  <span class="chip chip-gray">未启用</span>
+                </div>
+                <div class="text-xs text-gray-500">引导用户填写预约信息，销售跟进</div>
+              </div>
+              <div class="text-right">
+                <button class="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs rounded-md border border-emerald-100">去开启</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill 优化建议弹窗 -->
+      <div id="skill-optimize-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6" onclick="if(event.target===this) this.classList.add('hidden')">
+        <div class="bg-white rounded-2xl w-full max-w-xl">
+          <div class="flex items-center justify-between p-5 border-b border-gray-100">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-gray-900 rounded-lg flex items-center justify-center text-white">🔔</div>
+              <div>
+                <h3 class="font-semibold">沉默唤醒 · 优化建议</h3>
+                <p class="text-xs text-gray-500 mt-0.5">基于近 7 天数据分析</p>
+              </div>
+            </div>
+            <button onclick="document.getElementById('skill-optimize-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 text-xl">×</button>
+          </div>
+
+          <div class="p-6 space-y-5">
+            <!-- 问题诊断 -->
+            <div>
+              <div class="text-xs text-gray-500 mb-2">诊断</div>
+              <div class="bg-orange-50 border border-orange-100 rounded-lg p-3 text-sm text-orange-900">
+                当前回应率 <b class="num-font">11.9%</b>，低于行业均值 <b class="num-font">22.5%</b>。主要问题集中在：
+                <ul class="mt-2 space-y-1 text-xs text-orange-800">
+                  <li>· 唤醒文案过于销售化，用户敏感（占失败 54%）</li>
+                  <li>· 唤醒时机集中在晚 10 点后，用户活跃度低（占失败 28%）</li>
+                  <li>· 对"冷"意向用户反复唤醒，引起反感（占失败 18%）</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 优化方案 -->
+            <div>
+              <div class="text-xs text-gray-500 mb-2">优化方案（3 项）</div>
+              <div class="space-y-2">
+                <label class="flex items-start gap-2.5 p-3 border border-gray-100 rounded-lg cursor-pointer hover:border-emerald-200">
+                  <input type="checkbox" checked class="mt-0.5 accent-emerald-600 rounded">
+                  <div class="flex-1">
+                    <div class="text-sm font-medium mb-0.5">更换唤醒文案</div>
+                    <div class="text-xs text-gray-500">从"销售推荐"改为"资讯/答疑"语气，预计回应率提升 6-10%</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-2.5 p-3 border border-gray-100 rounded-lg cursor-pointer hover:border-emerald-200">
+                  <input type="checkbox" checked class="mt-0.5 accent-emerald-600 rounded">
+                  <div class="flex-1">
+                    <div class="text-sm font-medium mb-0.5">调整唤醒时机</div>
+                    <div class="text-xs text-gray-500">改在用户活跃时段（19:00-21:30）触发，预计回应率提升 3-5%</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-2.5 p-3 border border-gray-100 rounded-lg cursor-pointer hover:border-emerald-200">
+                  <input type="checkbox" class="mt-0.5 accent-emerald-600 rounded">
+                  <div class="flex-1">
+                    <div class="text-sm font-medium mb-0.5">缩小唤醒范围</div>
+                    <div class="text-xs text-gray-500">仅对"温"及以上意向用户唤醒，避免骚扰冷用户</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- 预期效果 -->
+            <div class="bg-emerald-50 border border-emerald-100 rounded-lg p-3 flex items-center justify-between text-sm">
+              <div>
+                <div class="text-xs text-gray-500">应用方案后预期</div>
+                <div class="text-emerald-900 font-medium mt-0.5">回应率 <span class="num-font">11.9% → 22-26%</span></div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-gray-500">预计增加线索</div>
+                <div class="text-emerald-900 font-medium mt-0.5 num-font">+ 48 条/周</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100 p-4 flex justify-end gap-2 bg-gray-50">
+            <button onclick="document.getElementById('skill-optimize-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white">取消</button>
+            <button onclick="document.getElementById('skill-optimize-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">去优化</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    <!-- /page-jingying -->
+
+    <!-- ============ 回传结果弹窗 ============ -->
+    <div id="huichuan-modal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6" onclick="if(event.target===this) this.classList.add('hidden')">
+      <div class="bg-white rounded-2xl w-full max-w-lg">
+        <div class="flex items-center justify-between p-5 border-b border-gray-100">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-pink-100 rounded-full flex items-center justify-center text-sm font-medium">晚</div>
+            <div>
+              <h3 class="font-semibold">回传跟进结果</h3>
+              <p class="text-xs text-gray-500 mt-0.5">晚晚妈🎀 · 四年级数学思维 · ¥5k-8k/期</p>
+            </div>
+          </div>
+          <button onclick="document.getElementById('huichuan-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 text-xl">×</button>
+        </div>
+
+        <div class="p-6 space-y-5">
+
+          <!-- 进展提示 -->
+          <div class="bg-emerald-50 border border-emerald-100 rounded-lg p-3 flex items-start gap-2.5 text-xs">
+            <span class="text-emerald-600 text-base">💡</span>
+            <div class="text-emerald-900">
+              回传后 AI 会根据结果优化对意向用户的识别，<b>提升后续线索准确度</b>。勾选后沟通进展自动推进。
+            </div>
+          </div>
+
+          <!-- 3 个打勾 -->
+          <div>
+            <div class="text-sm font-medium mb-3">跟进结果</div>
+            <div class="space-y-2.5">
+              <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg cursor-pointer hover:border-emerald-200 has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-50/40">
+                <input type="checkbox" checked class="mt-0.5 rounded accent-emerald-600">
+                <div class="flex-1">
+                  <div class="text-sm font-medium">✓ 预约试听</div>
+                  <div class="text-xs text-gray-500 mt-0.5">客户已确认试听时间</div>
+                </div>
+                <input type="datetime-local" value="2026-04-20T10:00" class="text-xs px-2 py-1 border border-gray-200 rounded">
+              </label>
+              <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg cursor-pointer hover:border-emerald-200 has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-50/40">
+                <input type="checkbox" class="mt-0.5 rounded accent-emerald-600">
+                <div class="flex-1">
+                  <div class="text-sm font-medium">○ 到店/上课</div>
+                  <div class="text-xs text-gray-500 mt-0.5">客户实际到场或参加线上课</div>
+                </div>
+              </label>
+              <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-lg cursor-pointer hover:border-emerald-200 has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-50/40">
+                <input type="checkbox" class="mt-0.5 rounded accent-emerald-600">
+                <div class="flex-1">
+                  <div class="text-sm font-medium">○ 成交签约</div>
+                  <div class="text-xs text-gray-500 mt-0.5">客户付款购买课程</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 成交金额（如勾选成交则启用） -->
+          <div>
+            <div class="text-sm font-medium mb-2">成交金额 <span class="text-gray-400 font-normal text-xs">（成交后填写）</span></div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">¥</span>
+              <input type="text" placeholder="未填写" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+              <select class="px-2 py-2 border border-gray-200 rounded-lg text-sm">
+                <option>年课</option><option>期课</option><option>次卡</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 未成交原因（如果未成交）-->
+          <div>
+            <div class="text-sm font-medium mb-2">未成交原因 <span class="text-gray-400 font-normal text-xs">（可选）</span></div>
+            <div class="flex flex-wrap gap-1.5">
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">价格偏高</button>
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">时间冲突</button>
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">师资不满意</button>
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">对比其他机构</button>
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">需求不匹配</button>
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">家长不同意</button>
+              <button class="chip chip-gray cursor-pointer hover:border-gray-300">+ 其他</button>
+            </div>
+          </div>
+
+          <!-- 跟进备注 -->
+          <div>
+            <div class="text-sm font-medium mb-2">跟进备注</div>
+            <textarea placeholder="记录客户反馈、下一步计划..." class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none" rows="3">孩子四年级数学，预约周六试听</textarea>
+          </div>
+
+        </div>
+
+        <div class="border-t border-gray-100 p-4 flex justify-end gap-2 bg-gray-50">
+          <button onclick="document.getElementById('huichuan-modal').classList.add('hidden')" class="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white">取消</button>
+          <button onclick="document.getElementById('huichuan-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm">保存回传</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- PAGE: 对话工作台 -->
+    <!-- ======================================== -->
+    <div id="page-chat" class="hidden-page" style="height: calc(100vh - 64px)">
+
+      <div class="flex flex-col h-full">
+
+        <div class="grid grid-cols-3 gap-4 flex-1 min-h-0">
+
+        <!-- 左：对话区（占 2 列） -->
+        <div class="col-span-2 card overflow-hidden flex flex-col h-full">
+          <!-- 顶部客户简要信息 -->
+          <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-sm font-medium">小</div>
+              <div>
+                <div class="font-semibold flex items-center gap-2">
+                  小诺爸爸
+                  <span class="chip chip-red text-[10px]">热</span>
+                  <span class="chip chip-orange text-[10px]">请求转人工</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-0.5">小红书 ID: 8821334451 · 2026-04-15 09:32 开始对话</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="px-4 py-1.5 bg-gray-900 text-white text-xs rounded-lg font-medium">立即接管</button>
+            </div>
+          </div>
+
+          <!-- 对话气泡区 -->
+          <div class="flex-1 p-5 space-y-4 bg-gray-50/30 overflow-y-auto">
+
+            <!-- 日期分割 -->
+            <div class="text-center text-xs text-gray-400 py-1">2026-04-15 周二</div>
+
+            <div class="flex justify-start gap-2">
+              <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs shrink-0">小</div>
+              <div class="max-w-[70%]">
+                <div class="text-xs text-gray-400 mb-1">09:32</div>
+                <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm border border-gray-100">
+                  你好，想了解一下你们的初一英语课程
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-2">
+              <div class="max-w-[70%]">
+                <div class="text-xs text-gray-400 mb-1 text-right">09:33 · AI</div>
+                <div class="bg-emerald-500 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm">
+                  您好～看到您对初一英语 1v1 感兴趣，孩子目前英语基础怎么样呀？
+                </div>
+              </div>
+              <div class="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-xs shrink-0">薯</div>
+            </div>
+
+            <div class="flex justify-start gap-2">
+              <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs shrink-0">小</div>
+              <div class="max-w-[70%]">
+                <div class="text-xs text-gray-400 mb-1">09:34</div>
+                <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm border border-gray-100">
+                  不太好，期末英语 70 分，主要是语法和写作弱
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-start gap-2">
+              <div class="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center text-xs shrink-0">小</div>
+              <div class="max-w-[70%]">
+                <div class="text-xs text-gray-400 mb-1">09:36</div>
+                <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm border border-gray-100">
+                  有什么课程适合孩子情况吗
+                </div>
+              </div>
+            </div>
+
+            <!-- 系统提示 -->
+            <div class="flex justify-center my-3">
+              <div class="bg-amber-50 border border-amber-200 rounded-full px-4 py-1.5 text-xs text-amber-800 flex items-center gap-2">
+                <span>⚠</span>
+                <span>09:36 用户请求转人工，AI 已暂停回复，等待销售接管</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 输入框 -->
+          <div class="border-t border-gray-100 p-4 bg-white">
+            <div class="flex items-end gap-2">
+              <div class="flex gap-1 mr-1">
+                <button class="w-8 h-8 hover:bg-gray-50 rounded flex items-center justify-center text-gray-400" title="表情">😀</button>
+                <button class="w-8 h-8 hover:bg-gray-50 rounded flex items-center justify-center text-gray-400" title="图片">📷</button>
+                <button class="w-8 h-8 hover:bg-gray-50 rounded flex items-center justify-center text-gray-400" title="快捷回复">⚡</button>
+              </div>
+              <textarea id="chat-input" placeholder="输入消息，Enter 发送…" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none" rows="2"></textarea>
+              <button class="px-5 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium">发送</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：客户信息栏 -->
+        <div class="card overflow-y-auto h-full">
+
+          <!-- 客户画像 -->
+          <div class="px-4 py-3 border-b border-gray-100">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-sm font-medium">小</div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold">小诺爸爸</span>
+                    <span class="dot bg-emerald-500" style="margin-right:0"></span>
+                    <span class="chip chip-red text-[11px] font-semibold">🔥 热</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                    <span>男</span><span>·</span><span>35-40</span><span>·</span><span>北京</span>
+                  </div>
+                </div>
+              </div>
+              <button class="px-2.5 py-1 border border-gray-200 rounded text-xs text-gray-600">关注</button>
+            </div>
+
+          </div>
+
+          <!-- AI 洞察 -->
+          <div class="p-4 border-b border-gray-100">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-medium">AI 洞察</div>
+              <button class="text-gray-400 hover:text-gray-600 text-xs">∧</button>
+            </div>
+
+            <!-- 客户画像 -->
+            <div class="bg-gray-50 rounded-lg p-3 mb-3">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-[11px] text-gray-500 font-medium">客户画像</div>
+                <button class="text-gray-400 hover:text-gray-600 text-[11px]">✏️</button>
+              </div>
+              <div class="text-xs text-gray-700 leading-relaxed">
+                客户为<span class="text-emerald-600 font-medium">初一学生家长（父亲）</span>，孩子<span class="text-emerald-600 font-medium">期末英语 70 分</span>，主要弱项在<span class="text-emerald-600 font-medium">语法和写作</span>。偏好 <span class="text-emerald-600 font-medium">1v1 名师</span>授课，对试听课接受度高，但<span class="text-orange-600 font-medium">价格较敏感</span>，核心关注<span class="text-emerald-600 font-medium">师资水平和提分效果</span>。决策风格偏务实，不宜过度铺垫。
+              </div>
+            </div>
+
+            <!-- 建议回复 -->
+            <div class="bg-gray-50 rounded-lg p-3">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-[11px] text-gray-500 font-medium">建议回复</div>
+                <button class="text-xs text-emerald-600 hover:underline">换一批</button>
+              </div>
+
+            <div class="space-y-1.5">
+              <!-- 方案 1 -->
+              <div class="border border-purple-100 bg-purple-50/40 rounded-lg p-2 relative">
+                <button onclick="toggleEdit(1)" id="sug-edit-btn-1" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-[11px]" title="编辑">✏️</button>
+                <div class="text-[10px] text-purple-600 mb-1 font-medium">推进试听</div>
+                <div id="sug-text-1" class="text-[11px] text-gray-800 leading-relaxed mb-1.5 pr-5">孩子语法和写作薄弱的话，推荐我们的「初中英语精准提分班」，老师会先做一次英语水平诊断，再针对弱项定制学习计划。要不先安排一节免费诊断课体验下？</div>
+                <textarea id="sug-edit-1" class="hidden w-full text-[11px] px-2 py-1 border border-purple-200 rounded leading-relaxed mb-1.5 resize-none" rows="3">孩子语法和写作薄弱的话，推荐我们的「初中英语精准提分班」，老师会先做一次英语水平诊断，再针对弱项定制学习计划。要不先安排一节免费诊断课体验下？</textarea>
+                <button onclick="adoptSuggestion(1)" class="w-full px-2 py-1 bg-gray-900 text-white text-[11px] rounded">采纳</button>
+              </div>
+
+              <!-- 方案 2 -->
+              <div class="border border-gray-100 rounded-lg p-2 hover:border-purple-200 relative">
+                <button onclick="toggleEdit(2)" id="sug-edit-btn-2" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-[11px]" title="编辑">✏️</button>
+                <div class="text-[10px] text-gray-500 mb-1 font-medium">发资料加微信</div>
+                <div id="sug-text-2" class="text-[11px] text-gray-700 leading-relaxed mb-1.5 pr-5">我把适合孩子的课程方案和往期学员提分案例整理好发您，加个微信方便发资料～先看看合不合适，没压力</div>
+                <textarea id="sug-edit-2" class="hidden w-full text-[11px] px-2 py-1 border border-purple-200 rounded leading-relaxed mb-1.5 resize-none" rows="3">我把适合孩子的课程方案和往期学员提分案例整理好发您，加个微信方便发资料～先看看合不合适，没压力</textarea>
+                <button onclick="adoptSuggestion(2)" class="w-full px-2 py-1 bg-gray-100 text-gray-700 text-[11px] rounded hover:bg-gray-200">采纳</button>
+              </div>
+
+              <!-- 方案 3 -->
+              <div class="border border-gray-100 rounded-lg p-2 hover:border-purple-200 relative">
+                <button onclick="toggleEdit(3)" id="sug-edit-btn-3" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-[11px]" title="编辑">✏️</button>
+                <div class="text-[10px] text-gray-500 mb-1 font-medium">直接报价</div>
+                <div id="sug-text-3" class="text-[11px] text-gray-700 leading-relaxed mb-1.5 pr-5">针对语法写作弱项，推荐「语法写作专项 1v1」48 课时 ¥6800，或「全科提分年课」120 课时 ¥16800 含诊断课，今天咨询额外送 5 节课</div>
+                <textarea id="sug-edit-3" class="hidden w-full text-[11px] px-2 py-1 border border-purple-200 rounded leading-relaxed mb-1.5 resize-none" rows="3">针对语法写作弱项，推荐「语法写作专项 1v1」48 课时 ¥6800，或「全科提分年课」120 课时 ¥16800 含诊断课，今天咨询额外送 5 节课</textarea>
+                <button onclick="adoptSuggestion(3)" class="w-full px-2 py-1 bg-gray-100 text-gray-700 text-[11px] rounded hover:bg-gray-200">采纳</button>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          <!-- 客资信息 -->
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-medium">客资信息</div>
+              <button class="text-xs text-emerald-600">编辑</button>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-500">客资标签</span>
+                <span class="chip chip-orange text-[10px]">已留资</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">手机号码</span>
+                <span class="font-medium num-font">159****3309</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">微信账号</span>
+                <span class="font-medium">nuo_papa_2018</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">小红书 ID</span>
+                <span class="font-medium num-font">8821334451</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">所属地域</span>
+                <span class="font-medium">北京市</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">来源</span>
+                <span class="font-medium">投流 · 初一英语_v2</span>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-gray-100">
+              <div class="text-xs text-gray-500 mb-1.5">备注</div>
+              <textarea placeholder="记录跟进情况..." class="w-full px-2 py-1.5 border border-gray-200 rounded text-xs resize-none" rows="2"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      </div>
+    </div>
+    <!-- /page-chat -->
+
+  </main>
+</div>
+
+<script>
+  function switchPage(name) {
+    document.getElementById('page-home').classList.toggle('hidden-page', name !== 'home');
+    document.getElementById('page-jingying').classList.toggle('hidden-page', name !== 'jingying');
+    const chatPage = document.getElementById('page-chat');
+    if (chatPage) chatPage.classList.toggle('hidden-page', name !== 'chat');
+
+    document.getElementById('nav-home').classList.toggle('nav-active', name === 'home');
+    document.getElementById('nav-home').classList.toggle('text-gray-600', name !== 'home');
+    document.getElementById('nav-jingying').classList.toggle('nav-active', name === 'jingying');
+    document.getElementById('nav-jingying').classList.toggle('text-gray-600', name !== 'jingying');
+    const navChat = document.getElementById('nav-chat');
+    if (navChat) {
+      navChat.classList.toggle('nav-active', name === 'chat');
+      navChat.classList.toggle('text-gray-600', name !== 'chat');
+    }
+
+    window.scrollTo(0, 0);
+  }
+  function openChat() { switchPage('chat'); }
+
+  // AI 建议回复 - 采纳/编辑交互
+  function adoptSuggestion(idx) {
+    const editArea = document.getElementById('sug-edit-' + idx);
+    const textDiv = document.getElementById('sug-text-' + idx);
+    // 取当前内容：编辑模式下用 textarea 的值，否则用 div 的文本
+    const isEditing = !editArea.classList.contains('hidden');
+    const content = isEditing ? editArea.value : textDiv.innerText;
+    // 填入对话输入框
+    const chatInput = document.getElementById('chat-input');
+    chatInput.value = content;
+    chatInput.focus();
+    // 视觉反馈：闪一下输入框
+    chatInput.style.transition = 'background 0.3s';
+    chatInput.style.background = '#ECFDF5';
+    setTimeout(() => { chatInput.style.background = ''; }, 600);
+    // 如果在编辑态，关闭编辑态
+    if (isEditing) toggleEdit(idx);
+  }
+
+  function toggleEdit(idx) {
+    const editArea = document.getElementById('sug-edit-' + idx);
+    const textDiv = document.getElementById('sug-text-' + idx);
+    const btn = document.getElementById('sug-edit-btn-' + idx);
+    if (editArea.classList.contains('hidden')) {
+      editArea.value = textDiv.innerText;
+      editArea.classList.remove('hidden');
+      textDiv.classList.add('hidden');
+      btn.textContent = '✓';
+      btn.classList.add('text-emerald-600');
+      btn.classList.remove('text-gray-400');
+      editArea.focus();
+    } else {
+      textDiv.innerText = editArea.value;
+      editArea.classList.add('hidden');
+      textDiv.classList.remove('hidden');
+      btn.textContent = '✏️';
+      btn.classList.remove('text-emerald-600');
+      btn.classList.add('text-gray-400');
+    }
+  }
+  function switchTab(name) {
+    ['overview', 'leads', 'quality', 'skills'].forEach(t => {
+      document.getElementById('tab-' + t).className = (t === name)
+        ? 'tab-active pb-3 text-sm font-medium'
+        : 'tab-inactive pb-3 text-sm font-medium';
+      document.getElementById('content-' + t).classList.toggle('hidden-tab', t !== name);
+    });
+  }
+  function switchRole(role) {
+    const sales = document.getElementById('role-sales');
+    const admin = document.getElementById('role-admin');
+    const hint = document.getElementById('role-hint');
+    if (role === 'sales') {
+      sales.className = 'px-4 py-1.5 bg-gray-900 text-white font-medium';
+      admin.className = 'px-4 py-1.5 text-gray-600';
+      hint.textContent = '查看 AI 跟进、我接管的线索，并回传跟进结果';
+      document.getElementById('lead-mine').classList.remove('hidden-tab');
+      document.getElementById('lead-rule').classList.add('hidden-tab');
+      document.getElementById('lead-staff').classList.add('hidden-tab');
+      const ruleVisible = !document.getElementById('leadview-rule').classList.contains('hidden-tab');
+      const staffVisible = !document.getElementById('leadview-staff').classList.contains('hidden-tab');
+      if (ruleVisible || staffVisible) switchLeadView('all');
+    } else {
+      admin.className = 'px-4 py-1.5 bg-gray-900 text-white font-medium';
+      sales.className = 'px-4 py-1.5 text-gray-600';
+      hint.textContent = '管理全部线索流转、配置自动分配规则、查看销售业绩';
+      document.getElementById('lead-rule').classList.remove('hidden-tab');
+      document.getElementById('lead-staff').classList.remove('hidden-tab');
+      document.getElementById('lead-mine').classList.add('hidden-tab');
+      const mineVisible = !document.getElementById('leadview-mine').classList.contains('hidden-tab');
+      if (mineVisible) switchLeadView('all');
+    }
+  }
+  function switchRuleMode(mode) {
+    ['custom', 'basic', 'manual'].forEach(m => {
+      const card = document.getElementById('mode-' + m);
+      const content = document.getElementById('mode-content-' + m);
+      if (m === mode) {
+        card.className = 'card p-4 border-2 border-emerald-500 bg-emerald-50/40 cursor-pointer relative';
+        content.classList.remove('hidden-tab');
+        // 加对勾
+        if (!card.querySelector('.mode-check')) {
+          const c = document.createElement('div');
+          c.className = 'mode-check absolute top-3 right-3 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs';
+          c.textContent = '✓';
+          card.appendChild(c);
+        }
+      } else {
+        card.className = 'card p-4 border-2 border-gray-100 cursor-pointer hover:border-gray-300 relative';
+        content.classList.add('hidden-tab');
+        const check = card.querySelector('.mode-check');
+        if (check) check.remove();
+      }
+      // 修正颜色
+      const title = card.querySelector('.font-medium');
+      const desc = card.querySelector('.text-xs');
+      if (m === mode) {
+        if (title) title.className = 'font-medium text-sm text-emerald-700 mb-2';
+        if (desc) desc.className = 'text-xs text-gray-600 leading-relaxed';
+      } else {
+        if (title) title.className = 'font-medium text-sm mb-2';
+        if (desc) desc.className = 'text-xs text-gray-500 leading-relaxed';
+      }
+    });
+  }
+  function switchAssignType(type) {
+    ['staff', 'group', 'ai'].forEach(t => {
+      const btn = document.getElementById('assign-' + t);
+      const content = document.getElementById('assign-content-' + t);
+      if (t === type) {
+        if (t === 'ai') {
+          btn.className = 'px-4 py-1.5 bg-purple-600 text-white';
+        } else {
+          btn.className = 'px-4 py-1.5 bg-gray-900 text-white';
+        }
+        content.classList.remove('hidden-tab');
+      } else {
+        if (t === 'ai') {
+          btn.className = 'px-4 py-1.5 text-purple-600 hover:bg-purple-50';
+        } else {
+          btn.className = 'px-4 py-1.5 text-gray-600 hover:bg-gray-50';
+        }
+        content.classList.add('hidden-tab');
+      }
+    });
+  }
+  function switchStaffTab(tab) {
+    ['staff-list', 'staff-group'].forEach(t => {
+      const btn = document.getElementById('staff-tab-' + t.split('-')[1]);
+      const content = document.getElementById('staff-content-' + t.split('-')[1]);
+      if (t === tab) {
+        btn.className = 'px-4 py-1.5 rounded-md bg-white shadow-sm font-medium';
+        content.classList.remove('hidden-tab');
+      } else {
+        btn.className = 'px-4 py-1.5 rounded-md text-gray-600';
+        content.classList.add('hidden-tab');
+      }
+    });
+  }
+  function switchLeadView(name) {
+    ['all', 'ai', 'mine', 'rule', 'staff'].forEach(v => {
+      const btn = document.getElementById('lead-' + v);
+      if (!btn) return;
+      // 保留 hidden-tab 状态（视角控制的）
+      const wasHidden = btn.classList.contains('hidden-tab');
+      if (v === name) {
+        btn.className = 'px-4 py-1.5 rounded-md bg-white shadow-sm font-medium';
+      } else {
+        btn.className = 'px-4 py-1.5 rounded-md text-gray-600';
+      }
+      if (wasHidden) btn.classList.add('hidden-tab');
+      const view = document.getElementById('leadview-' + v);
+      if (view) view.classList.toggle('hidden-tab', v !== name);
+    });
+  }
+</script>
+
+</body>
+</html>
